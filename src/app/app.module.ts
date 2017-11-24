@@ -7,6 +7,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import {SensorsPage} from "../pages/sensors/sensors";
+import {DeviceMotion} from "@ionic-native/device-motion";
+import {Gyroscope} from "@ionic-native/gyroscope";
+import {Geolocation} from "@ionic-native/geolocation";
 
 @NgModule({
   declarations: [
@@ -27,6 +30,9 @@ import {SensorsPage} from "../pages/sensors/sensors";
   providers: [
     StatusBar,
     SplashScreen,
+    DeviceMotion,
+    Gyroscope,
+    Geolocation,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

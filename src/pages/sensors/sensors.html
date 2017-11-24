@@ -15,7 +15,26 @@
 
 <ion-content padding>
 
-  <button ion-button full navPop>End Tracking</button>
+  <ion-grid>
 
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label color="primary" floating>CPU</ion-label>
+          <ion-input #cpu type="number"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <button ion-button (click)="sendStatusToIotPlatform(cpu.value)">
+          Send
+        </button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <button ion-button full navPop>End Tracking</button>
+    </ion-row>
+
+  </ion-grid>
 
 </ion-content>

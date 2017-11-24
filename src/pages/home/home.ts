@@ -12,7 +12,7 @@ export class HomePage {
 
   }
 
-  openSensorPage() {
+  private openSensorPage() {
     this.navCtrl.push(SensorsPage);
   }
 

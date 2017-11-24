@@ -10,12 +10,12 @@ export class AppConfig {
   };
 
   public static get IBM_IOT_PLATFORM_DEVICE_TYPE(): string {
-    return "Smartphone";
+    return "iPhone";
   };
 
   /** Represents the personal IoT Platform */
   public static get IBM_IOT_PLATFORM_ORGANIZATION(): string {
-    return "gn52u4";
+    return "zd0do9";
   };
 
   public static get IBM_IOT_PLATFORM_AUTHENTICATION_MODE(): string {
