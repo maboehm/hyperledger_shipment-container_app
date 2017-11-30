@@ -15,7 +15,7 @@ export class AppConfig {
 
   /** Represents the personal IoT Platform */
   public static get IBM_IOT_PLATFORM_ORGANIZATION(): string {
-    return "zd0do9";
+    return "rgiw9i";
   };
 
   public static get IBM_IOT_PLATFORM_AUTHENTICATION_MODE(): string {

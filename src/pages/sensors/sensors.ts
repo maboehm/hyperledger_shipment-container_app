@@ -28,13 +28,17 @@ export class SensorsPage {
   private accelerationX: number;
   private accelerationY: number;
   private accelerationZ: number;
+  private accelerationTime: number;
 
   private gyroscopeX: number;
   private gyroscopeY: number;
   private gyroscopeZ: number;
+  private gyroscopeTime: number;
 
-  private latitude: number;
-  private longitude: number;
+  private geolocationLatitude: number;
+  private geolocationLongitude: number;
+  private geolocationTime: number;
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation) {
     // Build up device config object
@@ -77,8 +81,8 @@ export class SensorsPage {
         this.updateAllData();
 
         // send data to the IoT platform
-        this.sendStatusToIotPlatform(this.accelerationX, this.accelerationY, this.accelerationZ, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.latitude, this.longitude);
-      }, 1000);
+        this.sendStatusToIotPlatform(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime);
+      }, 500);
       Logger.log("Started Tracking!");
     });
   }
@@ -93,21 +97,24 @@ export class SensorsPage {
   }
 
 
-  private sendStatusToIotPlatform(accelerationX: number, accelerationY: number, accelerationZ: number, gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, latitude: number, longitude: number) {
+  private sendStatusToIotPlatform(accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number, gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number, geolocationLatitude: number, geolocationLongitude: number, geolocationTime: number) {
     let deviceData = {
       acceleration: {
         x: accelerationX,
         y: accelerationY,
-        z: accelerationZ
+        z: accelerationZ,
+        time: accelerationTime
       },
       gyroscope: {
         x: gyroscopeX,
         y: gyroscopeY,
-        z: gyroscopeZ
+        z: gyroscopeZ,
+        time: gyroscopeTime
       },
       geolocation: {
-        latitude: latitude,
-        longitude: longitude
+        latitude: geolocationLatitude,
+        longitude: geolocationLongitude,
+        time: geolocationTime
       }
     };
 
@@ -129,6 +136,7 @@ export class SensorsPage {
         this.accelerationX = acceleration.x;
         this.accelerationY = acceleration.y;
         this.accelerationZ = acceleration.z;
+        this.accelerationTime = acceleration.timestamp;
 
         Logger.log("Acceleration - /n" +
                    "x: " + acceleration.x +
@@ -148,6 +156,7 @@ export class SensorsPage {
         this.gyroscopeX = orientation.x;
         this.gyroscopeY = orientation.y;
         this.gyroscopeZ = orientation.z;
+        this.gyroscopeTime = orientation.timestamp;
 
         Logger.log("Orientation - /n" +
                    "x: " + orientation.x +
@@ -160,18 +169,20 @@ export class SensorsPage {
   }
 
   private updateGeolocationData() {
-    Logger.debug("HALLO");
-
     this.geolocation.getCurrentPosition().then((geoposition: Geoposition) => {
-      this.latitude = geoposition.coords.latitude;
-      this.longitude = geoposition.coords.longitude;
+      this.geolocationLatitude = geoposition.coords.latitude;
+      this.geolocationLongitude = geoposition.coords.longitude;
+      this.geolocationTime = geoposition.timestamp;
 
       Logger.log("Geolocation - /n" +
-                 "latitude: " + geoposition.coords.latitude +
-                 "longitude: " + geoposition.coords.longitude);
-    }, (error: any) => {
+                 "geolocationLatitude: " + geoposition.coords.latitude +
+                 "geolocationLongitude: " + geoposition.coords.longitude);
+    }).catch((error: any) => {
       Logger.error(error);
     });
   }
 
+  private updatePicture() {
+    Logger.debug("Take Picture!");
+  }
 }

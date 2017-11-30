@@ -19,15 +19,103 @@
 
     <ion-row>
       <ion-col>
-        <ion-item>
-          <ion-label color="primary" floating>CPU</ion-label>
-          <ion-input #cpu type="number"></ion-input>
-        </ion-item>
+        <ion-card>
+
+          <ion-card-header>
+            <strong>Acceleration</strong>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item>
+              <ion-label color="primary" floating>X</ion-label>
+              <ion-input type="number" value="{{accelerationX}}" readonly></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Y</ion-label>
+              <ion-input type="number" value="{{accelerationY}}" readonly></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Z</ion-label>
+              <ion-input type="number" value="{{accelerationZ}}" readonly></ion-input>
+            </ion-item>
+          </ion-card-content>
+
+        </ion-card>
+
       </ion-col>
+    </ion-row>
+
+    <ion-row>
       <ion-col>
-        <button ion-button (click)="sendStatusToIotPlatform(cpu.value)">
-          Send
-        </button>
+        <ion-card>
+
+          <ion-card-header>
+            <strong>Gyroscope</strong>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item>
+              <ion-label color="primary" floating>X</ion-label>
+              <ion-input type="number" value="{{gyroscopeX}}" readonly></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Y</ion-label>
+              <ion-input type="number" value="{{gyroscopeY}}" readonly></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Z</ion-label>
+              <ion-input type="number" value="{{gyroscopeZ}}" readonly></ion-input>
+            </ion-item>
+          </ion-card-content>
+
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-card>
+
+          <ion-card-header>
+            <strong>Geolocation</strong>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item>
+              <ion-label color="primary" floating>Latitude</ion-label>
+              <ion-input type="number" value="{{geolocationLatitude}}" readonly></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Longitude</ion-label>
+              <ion-input type="number" value="{{geolocationLongitude}}" readonly></ion-input>
+            </ion-item>
+          </ion-card-content>
+
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-card>
+
+          <ion-card-header>
+            <strong>Camera</strong>
+          </ion-card-header>
+
+          <ion-card-content>
+            <button ion-button full (click)="updatePicture()">Take Image</button>
+          </ion-card-content>
+
+        </ion-card>
+
       </ion-col>
     </ion-row>
 
