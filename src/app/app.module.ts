@@ -10,6 +10,7 @@ import {SensorsPage} from "../pages/sensors/sensors";
 import {DeviceMotion} from "@ionic-native/device-motion";
 import {Gyroscope} from "@ionic-native/gyroscope";
 import {Geolocation} from "@ionic-native/geolocation";
+import {CameraPreview} from "@ionic-native/camera-preview";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {Geolocation} from "@ionic-native/geolocation";
     DeviceMotion,
     Gyroscope,
     Geolocation,
+    CameraPreview,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

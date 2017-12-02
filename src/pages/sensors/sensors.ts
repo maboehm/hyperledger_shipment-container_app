@@ -6,6 +6,10 @@ import {AppConfig} from "../../app/app.config";
 import {DeviceMotion, DeviceMotionAccelerationData} from "@ionic-native/device-motion";
 import {Gyroscope, GyroscopeOptions, GyroscopeOrientation} from "@ionic-native/gyroscope";
 import {Geolocation, Geoposition} from "@ionic-native/geolocation";
+import {
+  CameraPreview, CameraPreviewOptions,
+  CameraPreviewPictureOptions
+} from "@ionic-native/camera-preview";
 
 /**
  * Generated class for the SensorsPage page.
@@ -39,8 +43,10 @@ export class SensorsPage {
   private geolocationLongitude: number;
   private geolocationTime: number;
 
+  private image: string;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation) {
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview) {
     // Build up device config object
     let config = {
       "org": AppConfig.IBM_IOT_PLATFORM_ORGANIZATION,
@@ -182,7 +188,53 @@ export class SensorsPage {
     });
   }
 
+  /**
+   * This method uses the camera-preview plugin to automatically take a picture with the device camera.
+   * https://github.com/cordova-plugin-camera-preview/
+   */
   private updatePicture() {
-    Logger.debug("Take Picture!");
+    // options to configure the camera preview
+    let cameraPreviewOpts: CameraPreviewOptions = {
+      x: 0,
+      y: 0,
+      width: window.screen.width,
+      height: window.screen.height,
+      camera: this.cameraPreview.CAMERA_DIRECTION.BACK,
+      toBack: true,
+      tapPhoto: false,
+      previewDrag: false
+    };
+
+    //options to configure how the picture should be taken
+    let pictureOpts: CameraPreviewPictureOptions = {
+      width: 1280,
+      height: 1280,
+      quality: 85
+    };
+
+    // start the camera preview
+    this.cameraPreview.startCamera(cameraPreviewOpts).then(response => {
+      console.log("camera running!" + response);
+
+      // wait just a little bit longer in order to give the camera enough time to start
+      setTimeout(()=>{
+        Logger.log("Try to take picture.");
+        // turn the flash on
+        this.cameraPreview.setFlashMode(this.cameraPreview.FLASH_MODE.ON);
+
+        // take the picture
+        this.cameraPreview.takePicture(pictureOpts).then((base64PictureData) => {
+          Logger.log("took picture successfully");
+          // save the picture as base64 encoded string
+          this.image = "data:image/jpeg;base64," + base64PictureData;
+          // stop the camera preview
+          this.cameraPreview.stopCamera();
+        }, (error: any) => {
+          Logger.error(error);
+        });
+      }, 5000);
+    }).catch(error => {
+      console.log("could not access camera: " + error);
+    });
   }
 }
