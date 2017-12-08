@@ -1,17 +1,58 @@
 <ion-header>
+
   <ion-navbar>
     <ion-title>
       Container Tracker IoT Device
     </ion-title>
   </ion-navbar>
+
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
 
-  <button ion-button full (click)="openSensorPage()">Start Tracking</button>
+<ion-content padding>
+
+  <ion-grid>
+
+    <ion-row>
+      <ion-col>
+        <ion-card>
+
+          <ion-card-header>
+            <strong>Device Configuration</strong>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-item>
+              <ion-label color="primary" floating>Organization</ion-label>
+              <ion-input #organization type="text"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Device Type</ion-label>
+              <ion-input #device_type type="text"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Device ID</ion-label>
+              <ion-input #device_id type="text"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <ion-label color="primary" floating>Authentication Token</ion-label>
+              <ion-input #authentication_token type="text"></ion-input>
+            </ion-item>
+
+          </ion-card-content>
+
+        </ion-card>
+
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <button ion-button full (click)="openSensorPage(organization.value, device_type.value, device_id.value, authentication_token.value)">Start Tracking</button>
+    </ion-row>
+
+  </ion-grid>
 
 </ion-content>
