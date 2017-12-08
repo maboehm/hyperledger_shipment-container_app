@@ -10,6 +10,8 @@ import {
   CameraPreview, CameraPreviewOptions,
   CameraPreviewPictureOptions
 } from "@ionic-native/camera-preview";
+import {Storage} from "@ionic/storage";
+
 
 /**
  * Generated class for the SensorsPage page.
@@ -46,14 +48,14 @@ export class SensorsPage {
   private image: string;
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview, private storage: Storage) {
     // Build up device config object
     let config = {
-      "org": AppConfig.IBM_IOT_PLATFORM_ORGANIZATION,
-      "id": "iPhone-1",
-      "type": AppConfig.IBM_IOT_PLATFORM_DEVICE_TYPE,
+      "org": this.storage.get(AppConfig.STORAGE_KEY_ORGANISATION),
+      "id": this.storage.get(AppConfig.STORAGE_KEY_DEVICE_ID),
+      "type": this.storage.get(AppConfig.STORAGE_KEY_DEVICE_TYPE),
       "auth-method": AppConfig.IBM_IOT_PLATFORM_AUTHENTICATION_MODE,
-      "auth-token": "iPhone-1"
+      "auth-token": this.storage.get(AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN)
     };
 
     // Create IoT device object

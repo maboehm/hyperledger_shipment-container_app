@@ -11,6 +11,7 @@ import {DeviceMotion} from "@ionic-native/device-motion";
 import {Gyroscope} from "@ionic-native/gyroscope";
 import {Geolocation} from "@ionic-native/geolocation";
 import {CameraPreview} from "@ionic-native/camera-preview";
+import {IonicStorageModule} from "@ionic/storage";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {CameraPreview} from "@ionic-native/camera-preview";
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [

@@ -9,13 +9,17 @@ export class AppConfig {
     return true;
   };
 
-  public static get IBM_IOT_PLATFORM_DEVICE_TYPE(): string {
-    return "iPhone";
+  public static get STORAGE_KEY_ORGANISATION(): string {
+    return "organisation";
   };
-
-  /** Represents the personal IoT Platform */
-  public static get IBM_IOT_PLATFORM_ORGANIZATION(): string {
-    return "rgiw9i";
+  public static get STORAGE_KEY_DEVICE_ID(): string {
+    return "deviceId";
+  };
+  public static get STORAGE_KEY_DEVICE_TYPE(): string {
+    return "deviceType";
+  };
+  public static get STORAGE_KEY_AUTHENTICATION_TOKEN(): string {
+    return "authenticationToken";
   };
 
   public static get IBM_IOT_PLATFORM_AUTHENTICATION_MODE(): string {
