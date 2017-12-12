@@ -56,8 +56,15 @@ export class HomePage {
     this.storage.set(AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN, this.authenticationToken);
 
 
+    // build up payload to pass to the sensor page
+    let payload: any = {
+      "org": this.organisation,
+      "id": this.deviceId,
+      "type": this.deviceType,
+      "auth-token": this.authenticationToken
+    };
     // call the sensor page to start the tracking
-    this.navCtrl.push(SensorsPage);
+    this.navCtrl.push(SensorsPage, payload);
   }
 
 }

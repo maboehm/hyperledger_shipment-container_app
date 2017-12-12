@@ -11,7 +11,7 @@ import {
   CameraPreviewPictureOptions
 } from "@ionic-native/camera-preview";
 import {Storage} from "@ionic/storage";
-
+import {HttpClient} from "@angular/common/http";
 
 /**
  * Generated class for the SensorsPage page.
@@ -30,7 +30,6 @@ export class SensorsPage {
   private iotDevice: any;
   private updateInterval: any;
 
-  // data
   private accelerationX: number;
   private accelerationY: number;
   private accelerationZ: number;
@@ -48,14 +47,14 @@ export class SensorsPage {
   private image: string;
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview, private storage: Storage) {
-    // Build up device config object
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview, private storage: Storage) {
+    // Build up device config object - therefore, load the config data
     let config = {
-      "org": this.storage.get(AppConfig.STORAGE_KEY_ORGANISATION),
-      "id": this.storage.get(AppConfig.STORAGE_KEY_DEVICE_ID),
-      "type": this.storage.get(AppConfig.STORAGE_KEY_DEVICE_TYPE),
+      "org": this.navParams.get('org'),
+      "id": this.navParams.get('id'),
+      "type": this.navParams.get('type'),
       "auth-method": AppConfig.IBM_IOT_PLATFORM_AUTHENTICATION_MODE,
-      "auth-token": this.storage.get(AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN)
+      "auth-token": this.navParams.get('auth-token')
     };
 
     // Create IoT device object
@@ -79,7 +78,7 @@ export class SensorsPage {
     Logger.log("Trys to connect to Watson IoT Platform!");
     this.iotDevice.connect();
 
-    // wait until connected
+    // wait until connected and start publishing data afterwards
     this.iotDevice.on("connect", () => {
       Logger.log("connected to IoT Platform");
 
@@ -92,6 +91,18 @@ export class SensorsPage {
         this.sendStatusToIotPlatform(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime);
       }, 500);
       Logger.log("Started Tracking!");
+    });
+
+    // listen to commands send to this device for execution
+    this.iotDevice.on("command", (commandName,format,payload,topic) => {
+      // if the command is "takePicture"
+      if(commandName === "takePicture") {
+        this.handelTakePictureCommand();
+
+      // if the command is unknown then throw an exception
+      } else {
+        Logger.error("Command not supported: " + commandName);
+      }
     });
   }
 
@@ -125,9 +136,6 @@ export class SensorsPage {
         time: geolocationTime
       }
     };
-
-    Logger.debug(JSON.stringify(deviceData));
-
 
     this.iotDevice.publish("status", "json", JSON.stringify(deviceData), 0);
   }
@@ -191,10 +199,18 @@ export class SensorsPage {
   }
 
   /**
+   * This method handles the "takePicture" command which can be triggered from within the dashboard.
+   * First, a picture gets taken. Second, the picture gets uploaded to the dashboard directly (by passing the IoT platform).
+   * The picture does not get send to the dashboard via the IoT platform since messagses send to the IoT platform are limited to less than 200kb.
+   *
    * This method uses the camera-preview plugin to automatically take a picture with the device camera.
    * https://github.com/cordova-plugin-camera-preview/
+   *
+   * Caution: There is currently a bug in the cordova-plugin-camera-preview which causes this function to be really slow
+   * on an iOS device!
    */
-  private updatePicture() {
+  private handelTakePictureCommand() {
+    // ############# 1. Take the picture #############
     // options to configure the camera preview
     let cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -215,11 +231,12 @@ export class SensorsPage {
     };
 
     // start the camera preview
-    this.cameraPreview.startCamera(cameraPreviewOpts).then(response => {
+    this.cameraPreview.startCamera(cameraPreviewOpts).then((response) => {
       console.log("camera running!" + response);
 
       // wait just a little bit longer in order to give the camera enough time to start
-      setTimeout(()=>{
+      // this is needed because of a bug in the "cordova-plugin-camera-preview" plugin
+      setTimeout(() => {
         Logger.log("Try to take picture.");
         // turn the flash on
         this.cameraPreview.setFlashMode(this.cameraPreview.FLASH_MODE.ON);
@@ -231,6 +248,16 @@ export class SensorsPage {
           this.image = "data:image/jpeg;base64," + base64PictureData;
           // stop the camera preview
           this.cameraPreview.stopCamera();
+
+          // ############# 2. Upload the picture #############
+          this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", {"image": this.image}).subscribe(
+            // Successful responses call the first callback.
+            (data) => {Logger.log("Image uploaded successfully.")},
+            // Errors will call this callback instead:
+            (err) => {
+              Logger.error('Something went while uploading the image!' + JSON.stringify(err));
+            }
+          );
         }, (error: any) => {
           Logger.error(error);
         });
@@ -239,4 +266,5 @@ export class SensorsPage {
       console.log("could not access camera: " + error);
     });
   }
+
 }
