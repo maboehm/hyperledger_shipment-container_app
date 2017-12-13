@@ -103,4 +103,5 @@
     <plugin name="cordova-plugin-camera" spec="^3.0.0" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.7.0" />
     <plugin name="cordova-plugin-filepath" spec="^1.1.0" />
+    <plugin name="cordova-plugin-insomnia" spec="^4.3.0" />
 </widget>

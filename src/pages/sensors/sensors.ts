@@ -12,6 +12,7 @@ import {
 } from "@ionic-native/camera-preview";
 import {Storage} from "@ionic/storage";
 import {HttpClient} from "@angular/common/http";
+import {Insomnia} from "@ionic-native/insomnia";
 
 /**
  * Generated class for the SensorsPage page.
@@ -47,7 +48,7 @@ export class SensorsPage {
   private image: string;
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview, private storage: Storage) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview, private storage: Storage, private insomnia: Insomnia) {
     // Build up device config object - therefore, load the config data
     let config = {
       "org": this.navParams.get('org'),
@@ -74,6 +75,12 @@ export class SensorsPage {
   }
 
   private ionViewDidLoad() {
+    // let the app stay awake
+    this.insomnia.keepAwake().then(
+        () => Logger.log('Stays awake.'),
+        (error) => Logger.error(error)
+    );
+
     // connect device with IoT Platform
     Logger.log("Trys to connect to Watson IoT Platform!");
     this.iotDevice.connect();
@@ -107,6 +114,12 @@ export class SensorsPage {
   }
 
   private ionViewWillLeave() {
+    // allow the phone to sleep
+    this.insomnia.allowSleepAgain().then(
+      () => Logger.log('Allowed to sleep.'),
+      (error) => Logger.error(error)
+    );
+
     // end update interval
     clearInterval(this.updateInterval);
     Logger.log("Ended Tracking!");

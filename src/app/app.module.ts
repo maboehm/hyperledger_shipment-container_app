@@ -13,6 +13,7 @@ import {Geolocation} from "@ionic-native/geolocation";
 import {CameraPreview} from "@ionic-native/camera-preview";
 import {IonicStorageModule} from "@ionic/storage";
 import {HttpClientModule} from "@angular/common/http";
+import {Insomnia} from "@ionic-native/insomnia";
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import {HttpClientModule} from "@angular/common/http";
     Gyroscope,
     Geolocation,
     CameraPreview,
+    Insomnia,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
