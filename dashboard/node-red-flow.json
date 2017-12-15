@@ -1,10 +1,10 @@
 [
    {
-      "id":"8d117430.65fa9",
+      "id":"5ae1fcad.9f612c",
       "type":"ibmiot in",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "authentication":"apiKey",
-      "apiKey":"e230ef0c.d638f",
+      "apiKey":"6a0db911.f51498",
       "inputType":"evt",
       "deviceId":"",
       "applicationId":"",
@@ -21,54 +21,54 @@
       "allCommands":"",
       "allFormats":"",
       "qos":0,
-      "x":159,
-      "y":289.4999694824219,
+      "x":181,
+      "y":286.4999694824219,
       "wires":[
          [
-            "3ff29c9f.a80f34",
-            "35088b2a.753cd4",
-            "49f33978.d7e228",
-            "4494b162.3d2678",
-            "649451cf.8b4b68"
+            "b1a005a5.fb7f9",
+            "7891737.f962e8c",
+            "cbdc7bc3.be33d8",
+            "84761b04.99527",
+            "b264ae0f.2a9748"
          ]
       ]
    },
    {
-      "id":"e29ced6e.e21838",
+      "id":"7699bea5.e47bc8",
       "type":"debug",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"IoT Data to console",
       "active":false,
       "console":"false",
       "complete":"payload",
-      "x":887.7499694824219,
-      "y":101.10709381103516,
+      "x":909.7499694824219,
+      "y":98.10709381103516,
       "wires":[
 
       ]
    },
    {
-      "id":"3ff29c9f.a80f34",
+      "id":"b1a005a5.fb7f9",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Parse IoT Data to string",
       "func":"\nreturn {payload: JSON.stringify(msg)};",
       "outputs":1,
       "noerr":0,
-      "x":498.9999694824219,
-      "y":102.35709381103516,
+      "x":520.9999694824219,
+      "y":99.35709381103516,
       "wires":[
          [
-            "e29ced6e.e21838"
+            "7699bea5.e47bc8"
          ]
       ]
    },
    {
-      "id":"25af0bc3.b2a204",
+      "id":"6cabe2a2.61cf14",
       "type":"ui_chart",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
-      "group":"84d5d1a0.3b2e5",
+      "group":"8864d6f6.dbd6c8",
       "order":2,
       "width":0,
       "height":0,
@@ -98,8 +98,8 @@
          "#c5b0d5"
       ],
       "useOldStyle":false,
-      "x":1575.9639587402344,
-      "y":353.428466796875,
+      "x":1597.9639587402344,
+      "y":350.428466796875,
       "wires":[
          [
 
@@ -110,25 +110,25 @@
       ]
    },
    {
-      "id":"35088b2a.753cd4",
+      "id":"7891737.f962e8c",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Extract Gyroscope",
       "func":"let gyroscopeX = {};\nlet gyroscopeY = {};\nlet gyroscopeZ = {};\nlet status = {};\nlet exception = null;\n\ngyroscopeX.y = msg.payload.gyroscope.x;\ngyroscopeX.x = msg.payload.acceleration.time;\n\ngyroscopeY.y = msg.payload.gyroscope.y;\ngyroscopeY.x = msg.payload.acceleration.time;\n\ngyroscopeZ.y = msg.payload.gyroscope.z;\ngyroscopeZ.x = msg.payload.acceleration.time;\n\n\n// die Gyroscopewerte auswerten\nconst min = -2;\nconst max = 2;\n\nif (gyroscopeX.y < min || gyroscopeX.y > max ||\n    gyroscopeY.y < min || gyroscopeY.y > max ||\n    gyroscopeZ.y < min || gyroscopeZ.y > max) {\n    status = {\n        payload: \"Incorrect handling\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container handeled incorrectly.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.gyroscope.time\n    };\n} else {\n  status = {\n        payload: \"Correct handling\",\n        deviceId: msg.deviceId\n    };\n}\n\nlet gyroscopeDataOutput = {\n    \"gyroscopeData\": [gyroscopeX, gyroscopeY, gyroscopeZ],\n    \"deviceId\": msg.deviceId\n}\n\n// test if only exception data should be stored or if all the data should be stored\nif (flow.get(\"storeAllData\")) {\n    // all data\n    return [gyroscopeDataOutput, status, exception];\n} else {\n    // only exception data\n    if (exception !== null) {\n        return [gyroscopeDataOutput, status, exception];\n    } else {\n        return [null, status, null]\n    }\n}",
       "outputs":"3",
       "noerr":0,
-      "x":479,
-      "y":329.4999694824219,
+      "x":501,
+      "y":326.4999694824219,
       "wires":[
          [
-            "6b6f531.278ed2c"
+            "9640608b.0dd42"
          ],
          [
-            "ae2d44a5.ca74"
+            "d0feb91a.67f028"
          ],
          [
-            "ef2ace64.bad508",
-            "62421e9d.73e02"
+            "5c122fb.723145",
+            "2f111ca9.87068c"
          ]
       ],
       "inputLabels":[
@@ -141,11 +141,11 @@
       ]
    },
    {
-      "id":"af4dea22.827208",
+      "id":"4793311d.3777a",
       "type":"ui_chart",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
-      "group":"84d5d1a0.3b2e5",
+      "group":"8864d6f6.dbd6c8",
       "order":3,
       "width":0,
       "height":0,
@@ -175,8 +175,8 @@
          "#c5b0d5"
       ],
       "useOldStyle":false,
-      "x":1576.3211364746094,
-      "y":432.3570556640625,
+      "x":1598.3211364746094,
+      "y":429.3570556640625,
       "wires":[
          [
 
@@ -187,10 +187,10 @@
       ]
    },
    {
-      "id":"7de7fcd.8fe6004",
+      "id":"a058c3a4.1a3938",
       "type":"worldmap",
-      "z":"e6a7e7d.eca0198",
-      "name":"Map (all devices)",
+      "z":"2a7a2f07.9b0d98",
+      "name":"Untitled Theme 1",
       "lat":"",
       "lon":"",
       "zoom":"",
@@ -200,45 +200,45 @@
       "usermenu":"show",
       "layers":"show",
       "panit":"true",
-      "x":1592.9287109375,
-      "y":623.7142333984375,
+      "x":1614.9287109375,
+      "y":620.7142333984375,
       "wires":[
 
       ]
    },
    {
-      "id":"49f33978.d7e228",
+      "id":"cbdc7bc3.be33d8",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Extract Location",
       "func":"let location = {};\n\nlocation.name = msg.deviceId;\nlocation.lat = msg.payload.geolocation.latitude;\nlocation.lon = msg.payload.geolocation.longitude;\nlocation.zoom = 15;\n\nreturn {payload: location};",
       "outputs":1,
       "noerr":0,
-      "x":477.7499694824219,
-      "y":513.2499694824219,
+      "x":499.7499694824219,
+      "y":510.2499694824219,
       "wires":[
          [
-            "7de7fcd.8fe6004"
+            "a058c3a4.1a3938"
          ]
       ]
    },
    {
-      "id":"eb64afc1.0f2c2",
+      "id":"7b1a24d1.eff354",
       "type":"comment",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Readme",
       "info":"Das Dashboard kann unter \"/ui\" erreicht werden.\nDie Map mit allen IoT Geräten kann unter \"/worldmap\" eingesehen werden.\n\n\n\nIn den Templates können Angular/Angular-Material directives verwendet werden:\nhttps://material.angularjs.org/latest/api/directive/",
-      "x":109,
-      "y":129.49996948242188,
+      "x":131,
+      "y":126.49996948242188,
       "wires":[
 
       ]
    },
    {
-      "id":"dff7cdfe.8a04b8",
+      "id":"ce364d5b.02c65",
       "type":"ui_template",
-      "z":"e6a7e7d.eca0198",
-      "group":"2caa7b40.115b8c",
+      "z":"2a7a2f07.9b0d98",
+      "group":"340c0e7a.9b8882",
       "name":"Image",
       "order":1,
       "width":"6",
@@ -247,8 +247,8 @@
       "storeOutMessages":false,
       "fwdInMessages":false,
       "templateScope":"local",
-      "x":1548.4642333984375,
-      "y":673.3570556640625,
+      "x":1570.4642333984375,
+      "y":670.3570556640625,
       "wires":[
          [
 
@@ -256,32 +256,32 @@
       ]
    },
    {
-      "id":"10c8d94b.94b457",
+      "id":"6d01ab9a.7ca73c",
       "type":"http in",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Image Upload",
       "url":"/image-upload",
       "method":"post",
       "upload":true,
       "swaggerDoc":"",
-      "x":119,
-      "y":569.4999694824219,
+      "x":141,
+      "y":566.4999694824219,
       "wires":[
          [
-            "db86739c.96da08",
-            "3d0f1c52.683b14",
-            "7d9138bf.f8062"
+            "3e1edb43.f52b8c",
+            "8c6bf88.f521188",
+            "f7d17651.61f1"
          ]
       ]
    },
    {
-      "id":"2ffe67de.9b5ca",
+      "id":"4c55fbf3.33b53c",
       "type":"ui_dropdown",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
       "label":"Select Device",
       "place":"Select option",
-      "group":"78805df1.be5d9c",
+      "group":"2923f859.b39958",
       "order":1,
       "width":0,
       "height":0,
@@ -305,19 +305,19 @@
       ],
       "payload":"",
       "topic":"",
-      "x":1862.3927917480469,
-      "y":165.82144165039062,
+      "x":1884.3927917480469,
+      "y":162.82144165039062,
       "wires":[
          [
-            "d56a4cb3.8cb6a8"
+            "ae5749d.4553838"
          ]
       ]
    },
    {
-      "id":"3ba0559b.3d0bda",
+      "id":"ab894605.31e578",
       "type":"ui_template",
-      "z":"e6a7e7d.eca0198",
-      "group":"69760cae.e77b8c",
+      "z":"2a7a2f07.9b0d98",
+      "group":"35ea6b63.b1a184",
       "name":"Device Map",
       "order":0,
       "width":"0",
@@ -326,8 +326,8 @@
       "storeOutMessages":true,
       "fwdInMessages":true,
       "templateScope":"local",
-      "x":1576.6787109375,
-      "y":585.4999084472656,
+      "x":1598.6787109375,
+      "y":582.4999084472656,
       "wires":[
          [
 
@@ -335,46 +335,46 @@
       ]
    },
    {
-      "id":"1ba6308c.4e6a57",
+      "id":"4796c77f.32304",
       "type":"ui_text",
-      "z":"e6a7e7d.eca0198",
-      "group":"78805df1.be5d9c",
-      "order":2,
+      "z":"2a7a2f07.9b0d98",
+      "group":"2923f859.b39958",
+      "order":3,
       "width":"5",
       "height":"1",
       "name":"Gyroscope Status",
       "label":"Container Handling",
       "format":"{{msg.payload}}",
       "layout":"row-spread",
-      "x":1596.3211364746094,
-      "y":472.3570556640625,
+      "x":1618.3211364746094,
+      "y":469.3570556640625,
       "wires":[
 
       ]
    },
    {
-      "id":"ced72420.ae6928",
+      "id":"9d6b5b23.380aa8",
       "type":"ui_text",
-      "z":"e6a7e7d.eca0198",
-      "group":"78805df1.be5d9c",
-      "order":3,
+      "z":"2a7a2f07.9b0d98",
+      "group":"2923f859.b39958",
+      "order":2,
       "width":"5",
       "height":"1",
       "name":"Acceleration Status",
       "label":"Container orientation",
       "format":"{{msg.payload}}",
       "layout":"row-spread",
-      "x":1596.1424255371094,
-      "y":392.5356140136719,
+      "x":1618.1424255371094,
+      "y":389.5356140136719,
       "wires":[
 
       ]
    },
    {
-      "id":"cb70890f.5dbb9",
+      "id":"11803c60.b6cb0c",
       "type":"ui_template",
-      "z":"e6a7e7d.eca0198",
-      "group":"6c8c941.fb35eec",
+      "z":"2a7a2f07.9b0d98",
+      "group":"41ea2b7a.8909ec",
       "name":"List of all exceptions",
       "order":0,
       "width":"15",
@@ -383,26 +383,26 @@
       "storeOutMessages":true,
       "fwdInMessages":false,
       "templateScope":"local",
-      "x":1599.7142028808594,
-      "y":164.8571014404297,
+      "x":1621.7142028808594,
+      "y":161.8571014404297,
       "wires":[
          [
-            "2ffe67de.9b5ca",
-            "1893c482.4b0bf3",
-            "d56a4cb3.8cb6a8"
+            "4c55fbf3.33b53c",
+            "542170df.9ac4d8",
+            "ae5749d.4553838"
          ]
       ]
    },
    {
-      "id":"ef2ace64.bad508",
+      "id":"5c122fb.723145",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Container Exceptions",
       "func":"// only if the exception includes a valid time it will be processed\nif (msg.time !== undefined) {\n    // get the current list of exceptions\n    let exceptions = flow.get(\"exceptions\") || []; \n    \n    \n    // retrieve privious message\n    let priviousMessage = flow.get(\"priviousMessage\") || null;\n    \n    // check if current message equals privious message\n    if (priviousMessage !== null && msg.message.localeCompare(priviousMessage.message) === 0 && msg.deviceId.localeCompare(priviousMessage.deviceId) === 0) {\n        // abroad exception\n        return [null, null];\n    } else {\n        // save current message as privious message\n        flow.set(\"priviousMessage\", msg)\n    }\n    \n    // add timeString to exception\n    msg.timeString = new Date(msg.time).toString();\n    \n    // add exception to global list of exceptions\n    exceptions.push(msg);\n    flow.set(\"exceptions\", exceptions);\n    \n    // prepare notification\n    let notification = {};\n    notification.topic = msg.deviceId + \": \" + msg.message;\n    \n    // send global list of exceptions and notification\n    return [{payload: exceptions}, notification];\n} else {\n    return [null, null];\n}",
       "outputs":"2",
       "noerr":0,
-      "x":785.14306640625,
-      "y":315.7499084472656,
+      "x":807.14306640625,
+      "y":312.7499084472656,
       "wires":[
          [
 
@@ -417,11 +417,11 @@
       ]
    },
    {
-      "id":"ab7327d8.2ac5c",
+      "id":"c7635687.2708a8",
       "type":"ibmiot out",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "authentication":"apiKey",
-      "apiKey":"e230ef0c.d638f",
+      "apiKey":"6a0db911.f51498",
       "outputType":"cmd",
       "deviceId":"Container-2",
       "deviceType":"container",
@@ -431,33 +431,33 @@
       "qos":0,
       "name":"Send TakePicture Command to IoT Device",
       "service":"registered",
-      "x":2312.750015258789,
-      "y":813,
+      "x":2334.750015258789,
+      "y":810,
       "wires":[
 
       ]
    },
    {
-      "id":"db86739c.96da08",
+      "id":"3e1edb43.f52b8c",
       "type":"http response",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Success Response",
       "statusCode":"200",
       "headers":{
          "Access-Control-Allow-Origin":"*"
       },
-      "x":490,
-      "y":642.5,
+      "x":512,
+      "y":639.5,
       "wires":[
 
       ]
    },
    {
-      "id":"24222d7f.832832",
+      "id":"2e2611b7.630f86",
       "type":"ui_button",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Take Picture Button",
-      "group":"2caa7b40.115b8c",
+      "group":"340c0e7a.9b8882",
       "order":0,
       "width":"6",
       "height":"1",
@@ -469,21 +469,21 @@
       "payload":"true",
       "payloadType":"bool",
       "topic":"",
-      "x":1572.750015258789,
-      "y":813,
+      "x":1594.750015258789,
+      "y":810,
       "wires":[
          [
-            "2cf2b727.4e2b88"
+            "f0b6cb8e.ec1d9"
          ]
       ]
    },
    {
-      "id":"f956cfe1.83f21",
+      "id":"257e8f81.116e68",
       "type":"ui_ui_control",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Open Devices Tab",
-      "x":2067.392791748047,
-      "y":61,
+      "x":2089.392791748047,
+      "y":58,
       "wires":[
          [
 
@@ -491,47 +491,47 @@
       ]
    },
    {
-      "id":"1893c482.4b0bf3",
+      "id":"542170df.9ac4d8",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Open Devices Tab",
       "func":"// this function gets called if a message gets send by the priviouse node\n// the node \"List of all exceptions\" sends a message if a Container-ID form the list gets clicked\nreturn {payload:{tab:\"Devices\"}};",
       "outputs":1,
       "noerr":0,
-      "x":1858.6427917480469,
-      "y":61,
+      "x":1880.6427917480469,
+      "y":58,
       "wires":[
          [
-            "f956cfe1.83f21"
+            "257e8f81.116e68"
          ]
       ]
    },
    {
-      "id":"2cf2b727.4e2b88",
+      "id":"f0b6cb8e.ec1d9",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Set Device to request an image from",
       "func":"// check if msg selects a new device or triggers the \"takePicture\" command\n// in order to trigger the \"takePicture command\"\nreturn {deviceId:flow.get(\"selectedDevice\")};",
       "outputs":1,
       "noerr":0,
-      "x":1912.750015258789,
-      "y":813,
+      "x":1934.750015258789,
+      "y":810,
       "wires":[
          [
-            "ab7327d8.2ac5c"
+            "c7635687.2708a8"
          ]
       ]
    },
    {
-      "id":"d56a4cb3.8cb6a8",
+      "id":"ae5749d.4553838",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store currently selected device globally",
       "func":"// Store currently selected device in flow-context\nflow.set(\"selectedDevice\", msg.payload);\n",
       "outputs":1,
       "noerr":0,
-      "x":2132.0354919433594,
-      "y":108.85711669921875,
+      "x":2154.0354919433594,
+      "y":105.85711669921875,
       "wires":[
          [
 
@@ -539,12 +539,12 @@
       ]
    },
    {
-      "id":"7f611614.5f5a7",
+      "id":"e10b5eee.931e58",
       "type":"ui_switch",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
       "label":"Edge analytics",
-      "group":"84d5d1a0.3b2e5",
+      "group":"8864d6f6.dbd6c8",
       "order":1,
       "width":0,
       "height":0,
@@ -560,34 +560,34 @@
       "offvalueType":"bool",
       "officon":"",
       "offcolor":"",
-      "x":1562.750015258789,
-      "y":933,
+      "x":1584.750015258789,
+      "y":930,
       "wires":[
          [
-            "d4b0b9e2.3205e8"
+            "19b3a079.7a8d88"
          ]
       ]
    },
    {
-      "id":"4494b162.3d2678",
+      "id":"84761b04.99527",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Extract Acceleration",
       "func":"let accelerationX = {};\nlet accelerationY = {};\nlet accelerationZ = {};\nlet status = {};\nlet exception = null;\n\naccelerationX.y = msg.payload.acceleration.x; \naccelerationX.x = msg.payload.acceleration.time;\n\naccelerationY.y = msg.payload.acceleration.y;\naccelerationY.x = msg.payload.acceleration.time;\n\naccelerationZ.y = msg.payload.acceleration.z;\naccelerationZ.x = msg.payload.acceleration.time;\n\n\n// die Accelerationwerte auswerten\nif (accelerationZ.y > 9) {\n   status = {\n        payload: \"Correct position\",\n        deviceId: msg.deviceId\n    }; \n} else if (accelerationZ.y < -9) {\n    status = {\n        payload: \"Upside down\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container lies upside down.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.acceleration.time\n    };\n} else if (accelerationX.y > 9) {\n    status = {\n        payload: \"Left side down\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container lies left side down.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.acceleration.time\n    };\n} else if (accelerationX.y < -9) {\n    status = {\n        payload: \"Right side down\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container lies right side down.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.acceleration.time\n    };\n} else if (accelerationY.y > 9) {\n    status = {\n        payload: \"Turned forward\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container is turned forward.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.acceleration.time\n    };\n} else if (accelerationY.y < -9) {\n    status = {\n        payload: \"Turnend backwards\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container is turnend backwards.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.acceleration.time\n    };\n} else {\n    status = {\n        payload: \"No ground contact\",\n        deviceId: msg.deviceId\n    };\n    exception = {\n        message: \"Container has no ground contact.\",\n        deviceId: msg.deviceId,\n        time: msg.payload.acceleration.time\n    };\n}\n\nlet accelerationDataOutput = {\n    \"accelerationData\": [accelerationX, accelerationY, accelerationZ],\n    \"deviceId\": msg.deviceId\n}\n\n// test if only exception data should be stored or if all the data should be stored\nif (flow.get(\"storeAllData\")) {\n    // all data\n    return [accelerationDataOutput, status, exception];\n} else {\n    // only exception data\n    if (exception !== null) {\n        return [accelerationDataOutput, status, exception];\n    } else {\n        return [null, status, null]\n    }\n}",
       "outputs":"3",
       "noerr":0,
-      "x":489,
-      "y":229.49996948242188,
+      "x":511,
+      "y":226.49996948242188,
       "wires":[
          [
-            "b365840f.d100f"
+            "194e1418.1d815c"
          ],
          [
-            "97205d2e.8da97"
+            "fa570ecd.010758"
          ],
          [
-            "62421e9d.73e02",
-            "ef2ace64.bad508"
+            "2f111ca9.87068c",
+            "5c122fb.723145"
          ]
       ],
       "inputLabels":[
@@ -600,15 +600,15 @@
       ]
    },
    {
-      "id":"d4b0b9e2.3205e8",
+      "id":"19b3a079.7a8d88",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Data Volume Switch",
       "func":"// Store currently selected device in flow-context\nflow.set(\"storeAllData\", msg.payload);",
       "outputs":1,
       "noerr":0,
-      "x":1852.750015258789,
-      "y":933,
+      "x":1874.750015258789,
+      "y":930,
       "wires":[
          [
 
@@ -616,11 +616,11 @@
       ]
    },
    {
-      "id":"45c3bdb7.2a47dc",
+      "id":"12072b14.b90715",
       "type":"ui_button",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
-      "group":"84d5d1a0.3b2e5",
+      "group":"8864d6f6.dbd6c8",
       "order":4,
       "width":0,
       "height":0,
@@ -632,24 +632,24 @@
       "payload":"[]",
       "payloadType":"json",
       "topic":"",
-      "x":1578.53564453125,
-      "y":514.7142028808594,
+      "x":1600.53564453125,
+      "y":511.7142028808594,
       "wires":[
          [
-            "15bd3404.be9a0c"
+            "514bd8e0.646f18"
          ]
       ]
    },
    {
-      "id":"649451cf.8b4b68",
+      "id":"b264ae0f.2a9748",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store List of all IoT Devices",
       "func":"let iotDevicesSet = flow.get(\"iotDevicesSet\") || new Set();\n\n// check if the IoT device is not added to the list yet\nif (!iotDevicesSet.has(iotDevicesSet.add)) {\n    // add it to the list\n    iotDevicesSet.add(msg.deviceId);\n    // update the list\n    flow.set(\"iotDevicesSet\", iotDevicesSet);\n}\n\nreturn null;",
       "outputs":1,
       "noerr":0,
-      "x":785.142822265625,
-      "y":154.89283752441406,
+      "x":807.142822265625,
+      "y":151.89283752441406,
       "wires":[
          [
 
@@ -657,10 +657,10 @@
       ]
    },
    {
-      "id":"7de1ae56.715a68",
+      "id":"8d3a12c7.2af9b8",
       "type":"ui_template",
-      "z":"e6a7e7d.eca0198",
-      "group":"56d2a146.6b33f8",
+      "z":"2a7a2f07.9b0d98",
+      "group":"d9c3ccf6.ce63d",
       "name":"List of all IoT Devices",
       "order":0,
       "width":"6",
@@ -669,20 +669,20 @@
       "storeOutMessages":true,
       "fwdInMessages":false,
       "templateScope":"local",
-      "x":1600.1785583496094,
-      "y":121.49996948242188,
+      "x":1622.1785583496094,
+      "y":118.49996948242188,
       "wires":[
          [
-            "2ffe67de.9b5ca",
-            "1893c482.4b0bf3",
-            "d56a4cb3.8cb6a8"
+            "4c55fbf3.33b53c",
+            "542170df.9ac4d8",
+            "ae5749d.4553838"
          ]
       ]
    },
    {
-      "id":"30243225.47ae86",
+      "id":"d0d8fb3c.6aeb7",
       "type":"inject",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Remove all data",
       "topic":"",
       "payload":"",
@@ -690,24 +690,24 @@
       "repeat":"",
       "crontab":"",
       "once":false,
-      "x":150.62855529785156,
-      "y":721.1999816894531,
+      "x":172.62855529785156,
+      "y":718.1999816894531,
       "wires":[
          [
-            "867162b3.277ae"
+            "5e7024a5.48edc4"
          ]
       ]
    },
    {
-      "id":"867162b3.277ae",
+      "id":"5e7024a5.48edc4",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Remove all data",
       "func":"flow.set(\"exceptions\", undefined);\nflow.set(\"iotDeviceExceptionStatus\", undefined);\nflow.set(\"iotDevicesSet\", undefined);\nflow.set(\"selectedDevice\", undefined);\nflow.set(\"priviousMessage\", undefined);\nflow.set(\"accelerationData\", undefined);\nflow.set(\"gyroscopeData\", undefined);\nflow.set(\"imageData\", undefined);\nflow.set(\"accelerationStatusData\", undefined);\nflow.set(\"gyroscopeStatusData\", undefined);\n\nreturn null;\n",
       "outputs":1,
       "noerr":0,
-      "x":384.62855529785156,
-      "y":721.9000549316406,
+      "x":406.62855529785156,
+      "y":718.9000549316406,
       "wires":[
          [
 
@@ -715,15 +715,15 @@
       ]
    },
    {
-      "id":"62421e9d.73e02",
+      "id":"2f111ca9.87068c",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Exception status of all IoT devices",
       "func":"// only if the exception includes a valid time it will be processed\nif (msg.time !== undefined) {\n    let iotDeviceExceptionStatus = flow.get(\"iotDeviceExceptionStatus\") || {};\n    \n    // update the status of the specific device\n    iotDeviceExceptionStatus[msg.deviceId] = true; \n    \n    // save the iotDeviceExceptionStatus data\n    flow.set(\"iotDeviceExceptionStatus\", iotDeviceExceptionStatus);\n}\n\n return null;",
       "outputs":1,
       "noerr":0,
-      "x":823.3785400390625,
-      "y":277.9356689453125,
+      "x":845.3785400390625,
+      "y":274.9356689453125,
       "wires":[
          [
 
@@ -731,20 +731,20 @@
       ]
    },
    {
-      "id":"762fa34f.36bcf4",
+      "id":"1b932f1b.01aaf1",
       "type":"ui_template",
-      "z":"e6a7e7d.eca0198",
-      "group":"78805df1.be5d9c",
+      "z":"2a7a2f07.9b0d98",
+      "group":"2923f859.b39958",
       "name":"List of all exceptions of the current device",
-      "order":5,
+      "order":6,
       "width":"7",
       "height":"7",
       "format":"<md-list style>\n    <md-list-item class=\"md-3-line\" ng-repeat=\"exception in msg.exceptions | filter:msg.selectedDevice | orderBy:'-time'\">\n        <img src=\"http://images.clipartpanda.com/exception-clipart-136637359138898496exception.svg\" class=\"md-avatar\"/>\n        <div class=\"md-list-item-text\">\n          <h3>{{exception.message}}</h3>\n          <p>\n            {{exception.timeString}}\n          </p>\n        </div>\n    </md-list-item>\n</md-list>",
       "storeOutMessages":true,
       "fwdInMessages":false,
       "templateScope":"local",
-      "x":1661.7500915527344,
-      "y":255.7785186767578,
+      "x":1683.7500915527344,
+      "y":252.7785186767578,
       "wires":[
          [
 
@@ -752,12 +752,12 @@
       ]
    },
    {
-      "id":"c1f7c9c1.fe9b28",
+      "id":"a05d8d8e.c34eb",
       "type":"ui_button",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
-      "group":"78805df1.be5d9c",
-      "order":6,
+      "group":"2923f859.b39958",
+      "order":7,
       "width":0,
       "height":0,
       "passthru":false,
@@ -768,60 +768,42 @@
       "payload":"",
       "payloadType":"str",
       "topic":"",
-      "x":1591.0210876464844,
-      "y":299.1641845703125,
+      "x":1613.0210876464844,
+      "y":296.1641845703125,
       "wires":[
          [
-            "20191ddb.d657a2"
+            "d78d7771.de0118"
          ]
       ]
    },
    {
-      "id":"225e85fe.8496da",
+      "id":"f7b2969d.32444",
       "type":"ui_text",
-      "z":"e6a7e7d.eca0198",
-      "group":"78805df1.be5d9c",
-      "order":4,
+      "z":"2a7a2f07.9b0d98",
+      "group":"2923f859.b39958",
+      "order":5,
       "width":"7",
       "height":"1",
       "name":"",
       "label":"Exceptions:",
       "format":"",
       "layout":"row-spread",
-      "x":1571.8786010742188,
-      "y":712.5500183105469,
+      "x":1593.8786010742188,
+      "y":709.5500183105469,
       "wires":[
 
       ]
    },
    {
-      "id":"41578501.f38c6c",
-      "type":"ui_text",
-      "z":"e6a7e7d.eca0198",
-      "group":"78805df1.be5d9c",
-      "order":3,
-      "width":"5",
-      "height":"1",
-      "name":"Exception status",
-      "label":"Exception status",
-      "format":"{{msg.payload}}",
-      "layout":"row-spread",
-      "x":1576.278564453125,
-      "y":751.4000244140625,
-      "wires":[
-
-      ]
-   },
-   {
-      "id":"20191ddb.d657a2",
+      "id":"d78d7771.de0118",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Remove Exceptions of selected device and reset exception status",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\n\n\n// delete exceptions of the selected device\nlet exceptions = flow.get(\"exceptions\");\n\nfor (let i = exceptions.length - 1; i >= 0; i--) {\n    if (exceptions[i].deviceId === selectedDevice) { \n        exceptions.splice(i, 1);\n    }\n}\n\nflow.set(\"exceptions\", exceptions);\n\n\n\n\n// reset exception status of the currently selected device\nlet iotDeviceExceptionStatus = flow.get(\"iotDeviceExceptionStatus\");\n\niotDeviceExceptionStatus[selectedDevice] = undefined;\n\nflow.set(\"iotDeviceExceptionStatus\", iotDeviceExceptionStatus);",
       "outputs":1,
       "noerr":0,
-      "x":1970.02099609375,
-      "y":299.2142028808594,
+      "x":1992.02099609375,
+      "y":296.2142028808594,
       "wires":[
          [
 
@@ -829,9 +811,9 @@
       ]
    },
    {
-      "id":"6047f755.3cfd78",
+      "id":"7ca07d00.5edb8c",
       "type":"inject",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Reload UI",
       "topic":"",
       "payload":"",
@@ -839,79 +821,79 @@
       "repeat":"0.4",
       "crontab":"",
       "once":true,
-      "x":1018.8035583496094,
-      "y":342.5624694824219,
+      "x":1040.8035583496094,
+      "y":339.5624694824219,
       "wires":[
          [
-            "105a0db8.8dd462",
-            "61188df3.ec21b4",
-            "2d758746.2cb68",
-            "69719483.0c0d8c",
-            "907709ba.85a8f8",
-            "c5ab3b31.1e3458",
-            "ca95a8f6.3e76e"
+            "e0c989d8.ffdce",
+            "e42a77e2.2ee2a",
+            "10ba60e3.eae107",
+            "a9684141.9d324",
+            "47655519.b2e23c",
+            "2fdf61ae.2c300e",
+            "6d227113.da77c8"
          ]
       ]
    },
    {
-      "id":"105a0db8.8dd462",
+      "id":"e0c989d8.ffdce",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load list of all devices",
       "func":"\n\nreturn {\"listOfDevices\":Array.from(flow.get(\"iotDevicesSet\") || new Set()), \"exceptionStatusOfDevices\": flow.get(\"iotDeviceExceptionStatus\")};",
       "outputs":1,
       "noerr":0,
-      "x":1241.3035583496094,
-      "y":123.43748474121094,
+      "x":1263.3035583496094,
+      "y":120.43748474121094,
       "wires":[
          [
-            "7de1ae56.715a68"
+            "8d3a12c7.2af9b8"
          ]
       ]
    },
    {
-      "id":"61188df3.ec21b4",
+      "id":"e42a77e2.2ee2a",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load list of all exceptions",
       "func":"return {\n    \"exceptions\":flow.get(\"exceptions\"),\n    \"selectedDevice\":flow.get(\"selectedDevice\")\n};",
       "outputs":1,
       "noerr":0,
-      "x":1245.0535583496094,
-      "y":188.43748474121094,
+      "x":1267.0535583496094,
+      "y":185.43748474121094,
       "wires":[
          [
-            "cb70890f.5dbb9",
-            "762fa34f.36bcf4"
+            "11803c60.b6cb0c",
+            "1b932f1b.01aaf1"
          ]
       ]
    },
    {
-      "id":"2d758746.2cb68",
+      "id":"10ba60e3.eae107",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load Acceleration Data of Selected Device",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\nlet accelerationData = flow.get(\"accelerationData\");\n\n// check if acceleration data already exists for the selected device\nif (accelerationData !== undefined && selectedDevice !== undefined && accelerationData[selectedDevice] !== undefined) {\n return {\"payload\":accelerationData[selectedDevice]};   \n} else {\n    return {\"payload\":[]};\n}",
       "outputs":1,
       "noerr":0,
-      "x":1286.857177734375,
-      "y":314.71429443359375,
+      "x":1308.857177734375,
+      "y":311.71429443359375,
       "wires":[
          [
-            "25af0bc3.b2a204"
+            "6cabe2a2.61cf14"
          ]
       ]
    },
    {
-      "id":"b365840f.d100f",
+      "id":"194e1418.1d815c",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Acceleration Data",
       "func":"// get all the acceleration data\nlet accelerationData = flow.get(\"accelerationData\") || {};\n\n// if their is currently no data stored about the device, than the data has to be initialized\nif (accelerationData[msg.deviceId] === undefined) {\n    accelerationData[msg.deviceId] = [{\n        \"series\": [\"x\", \"y\", \"z\"],\n        \"data\": [[], [], []],\n        \"labels\": []\n    }]\n}\n\n// store the new data\naccelerationData[msg.deviceId][0].data[0].push(msg.accelerationData[0]);\naccelerationData[msg.deviceId][0].data[1].push(msg.accelerationData[1]);\naccelerationData[msg.deviceId][0].data[2].push(msg.accelerationData[2]);\n\n// remove old data so that only 60 elements are stored at a time\nif (accelerationData[msg.deviceId][0].data[0].length > 60) {\n    // remove first element\n    accelerationData[msg.deviceId][0].data[0].shift();\n    accelerationData[msg.deviceId][0].data[1].shift();\n    accelerationData[msg.deviceId][0].data[2].shift();\n}\n\n\nflow.set(\"accelerationData\", accelerationData)\n\nreturn null;",
       "outputs":1,
       "noerr":0,
-      "x":773.8570556640625,
-      "y":196.142822265625,
+      "x":795.8570556640625,
+      "y":193.142822265625,
       "wires":[
          [
 
@@ -919,15 +901,15 @@
       ]
    },
    {
-      "id":"6b6f531.278ed2c",
+      "id":"9640608b.0dd42",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Gyroscope Data",
       "func":"// get all the gyroscope data\nlet gyroscopeData = flow.get(\"gyroscopeData\") || {};\n\n// if their is currently no data stored about the device, than the data has to be initialized\nif (gyroscopeData[msg.deviceId] === undefined) {\n    gyroscopeData[msg.deviceId] = [{\n        \"series\": [\"x\", \"y\", \"z\"],\n        \"data\": [[], [], []],\n        \"labels\": []\n    }]\n}\n\n// store the new data\ngyroscopeData[msg.deviceId][0].data[0].push(msg.gyroscopeData[0]);\ngyroscopeData[msg.deviceId][0].data[1].push(msg.gyroscopeData[1]);\ngyroscopeData[msg.deviceId][0].data[2].push(msg.gyroscopeData[2]);\n\n// remove old data so that only 60 elements are stored at a time\nif (gyroscopeData[msg.deviceId][0].data[0].length > 60) {\n    // remove first element\n    gyroscopeData[msg.deviceId][0].data[0].shift();\n    gyroscopeData[msg.deviceId][0].data[1].shift();\n    gyroscopeData[msg.deviceId][0].data[2].shift();\n}\n\n\nflow.set(\"gyroscopeData\", gyroscopeData)\n\nreturn null;",
       "outputs":1,
       "noerr":0,
-      "x":767,
-      "y":392,
+      "x":789,
+      "y":389,
       "wires":[
          [
 
@@ -935,31 +917,31 @@
       ]
    },
    {
-      "id":"69719483.0c0d8c",
+      "id":"a9684141.9d324",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load Gyroscope Data of Selected Device",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\nlet gyroscopeData = flow.get(\"gyroscopeData\");\n\n// check if gyroscope data already exists for the selected device\nif (gyroscopeData !== undefined && selectedDevice !== undefined && gyroscopeData[selectedDevice] !== undefined) {\n return {\"payload\":gyroscopeData[selectedDevice]};   \n} else {\n    return {\"payload\":[]};\n}",
       "outputs":1,
       "noerr":0,
-      "x":1281,
-      "y":444,
+      "x":1303,
+      "y":441,
       "wires":[
          [
-            "af4dea22.827208"
+            "4793311d.3777a"
          ]
       ]
    },
    {
-      "id":"15bd3404.be9a0c",
+      "id":"514bd8e0.646f18",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Remove Acceleration and Gyroscope Data of selected device",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\n\n\n// delete acceleration data of the selected device\nlet accelerationData = flow.get(\"accelerationData\");\naccelerationData[selectedDevice] = undefined;\nflow.set(\"accelerationData\", accelerationData);\n\n\n\n// delete gyroscope data of the selected device\nlet gyroscopeData = flow.get(\"gyroscopeData\");\ngyroscopeData[selectedDevice] = undefined;\nflow.set(\"gyroscopeData\", gyroscopeData);",
       "outputs":1,
       "noerr":0,
-      "x":1931,
-      "y":511,
+      "x":1953,
+      "y":508,
       "wires":[
          [
 
@@ -967,15 +949,15 @@
       ]
    },
    {
-      "id":"3d0f1c52.683b14",
+      "id":"8c6bf88.f521188",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Image Data",
       "func":"// get all the image data\nlet imageData = flow.get(\"imageData\") || {};\n\n// store the image\nimageData[msg.payload.deviceId] = msg.payload.image;\n\nflow.set(\"imageData\", imageData)\n\nreturn null;",
       "outputs":1,
       "noerr":0,
-      "x":756,
-      "y":573,
+      "x":778,
+      "y":570,
       "wires":[
          [
 
@@ -983,31 +965,31 @@
       ]
    },
    {
-      "id":"907709ba.85a8f8",
+      "id":"47655519.b2e23c",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load Image",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\nlet imageData = flow.get(\"imageData\") || {};\n\n// check if their is an image for the selected deivce\nif (imageData[selectedDevice] !== undefined) {\n    return {\"payload\":imageData[selectedDevice]};   \n} else {\n    return {\"payload\":\"\"};\n}",
       "outputs":1,
       "noerr":0,
-      "x":1200,
-      "y":671,
+      "x":1222,
+      "y":668,
       "wires":[
          [
-            "dff7cdfe.8a04b8"
+            "ce364d5b.02c65"
          ]
       ]
    },
    {
-      "id":"97205d2e.8da97",
+      "id":"fa570ecd.010758",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Acceleration Status",
       "func":"// get all the acceleration status data\nlet accelerationStatusData = flow.get(\"accelerationStatusData\") || {};\n\n// store the acceleration status data\naccelerationStatusData[msg.deviceId] = msg.payload;\n\nflow.set(\"accelerationStatusData\", accelerationStatusData)\n\nreturn null;",
       "outputs":1,
       "noerr":0,
-      "x":779,
-      "y":238,
+      "x":801,
+      "y":235,
       "wires":[
          [
 
@@ -1015,31 +997,31 @@
       ]
    },
    {
-      "id":"c5ab3b31.1e3458",
+      "id":"2fdf61ae.2c300e",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load Acceleration Status",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\nlet accelerationStatusData = flow.get(\"accelerationStatusData\") || {};\n\n// check if their is a gyroscope status for the selected deivce\nif (accelerationStatusData[selectedDevice] !== undefined) {\n    return {\"payload\": accelerationStatusData[selectedDevice]};   \n} else {\n    return {\"payload\":\"-\"};\n}",
       "outputs":1,
       "noerr":0,
-      "x":1236,
-      "y":393,
+      "x":1258,
+      "y":390,
       "wires":[
          [
-            "ced72420.ae6928"
+            "9d6b5b23.380aa8"
          ]
       ]
    },
    {
-      "id":"ae2d44a5.ca74",
+      "id":"d0feb91a.67f028",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Store Gyroscope Status",
       "func":"// get all the gyroscope status data\nlet gyroscopeStatusData = flow.get(\"gyroscopeStatusData\") || {};\n\n// store the gyroscope status data\ngyroscopeStatusData[msg.deviceId] = msg.payload;\n\nflow.set(\"gyroscopeStatusData\", gyroscopeStatusData)\n\nreturn null;",
       "outputs":1,
       "noerr":0,
-      "x":779,
-      "y":354,
+      "x":801,
+      "y":351,
       "wires":[
          [
 
@@ -1047,37 +1029,37 @@
       ]
    },
    {
-      "id":"ca95a8f6.3e76e",
+      "id":"6d227113.da77c8",
       "type":"function",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"Load Gyroscope Status",
       "func":"let selectedDevice = flow.get(\"selectedDevice\");\nlet gyroscopeStatusData = flow.get(\"gyroscopeStatusData\") || {};\n\n// check if their is a gyroscope status for the selected deivce\nif (gyroscopeStatusData[selectedDevice] !== undefined) {\n    return {\"payload\": gyroscopeStatusData[selectedDevice]};   \n} else {\n    return {\"payload\":\"-\"};\n}",
       "outputs":1,
       "noerr":0,
-      "x":1229,
-      "y":491,
+      "x":1251,
+      "y":488,
       "wires":[
          [
-            "1ba6308c.4e6a57"
+            "4796c77f.32304"
          ]
       ]
    },
    {
-      "id":"7d9138bf.f8062",
+      "id":"f7d17651.61f1",
       "type":"debug",
-      "z":"e6a7e7d.eca0198",
+      "z":"2a7a2f07.9b0d98",
       "name":"",
       "active":true,
       "console":"false",
       "complete":"true",
-      "x":944.5,
-      "y":605.5,
+      "x":966.5,
+      "y":602.5,
       "wires":[
 
       ]
    },
    {
-      "id":"e230ef0c.d638f",
+      "id":"6a0db911.f51498",
       "type":"ibmiot",
       "z":"",
       "name":"Dashboard API Key (rgiw9i)",
@@ -1088,67 +1070,67 @@
       "shared":false
    },
    {
-      "id":"84d5d1a0.3b2e5",
+      "id":"8864d6f6.dbd6c8",
       "type":"ui_group",
       "z":"",
       "name":"IoT Device Data",
-      "tab":"b08e6977.c73098",
+      "tab":"70496e77.1358a",
       "order":3,
       "disp":true,
       "width":"10"
    },
    {
-      "id":"2caa7b40.115b8c",
+      "id":"340c0e7a.9b8882",
       "type":"ui_group",
       "z":"",
       "name":"Image",
-      "tab":"b08e6977.c73098",
+      "tab":"70496e77.1358a",
       "order":2,
       "disp":true,
       "width":"6"
    },
    {
-      "id":"78805df1.be5d9c",
+      "id":"2923f859.b39958",
       "type":"ui_group",
       "z":"",
       "name":"Device",
-      "tab":"b08e6977.c73098",
+      "tab":"70496e77.1358a",
       "order":1,
       "disp":true,
       "width":"7"
    },
    {
-      "id":"69760cae.e77b8c",
+      "id":"35ea6b63.b1a184",
       "type":"ui_group",
       "z":"",
       "name":"Map",
-      "tab":"b08e6977.c73098",
+      "tab":"70496e77.1358a",
       "order":4,
       "disp":true,
       "width":"6"
    },
    {
-      "id":"6c8c941.fb35eec",
+      "id":"41ea2b7a.8909ec",
       "type":"ui_group",
       "z":"",
       "name":"List of all Exceptions",
-      "tab":"fa38ab9b.06bf2",
+      "tab":"176523f.4c3155c",
       "order":2,
       "disp":true,
       "width":"15"
    },
    {
-      "id":"56d2a146.6b33f8",
+      "id":"d9c3ccf6.ce63d",
       "type":"ui_group",
       "z":"",
       "name":"Container Overview",
-      "tab":"fa38ab9b.06bf2",
+      "tab":"176523f.4c3155c",
       "order":1,
       "disp":true,
       "width":"6"
    },
    {
-      "id":"b08e6977.c73098",
+      "id":"70496e77.1358a",
       "type":"ui_tab",
       "z":"",
       "name":"Devices",
@@ -1156,7 +1138,7 @@
       "order":2
    },
    {
-      "id":"fa38ab9b.06bf2",
+      "id":"176523f.4c3155c",
       "type":"ui_tab",
       "z":"",
       "name":"Home",
