@@ -263,7 +263,7 @@ export class SensorsPage {
           this.cameraPreview.stopCamera();
 
           // ############# 2. Upload the picture #############
-          this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", {"image": this.image}).subscribe(
+          this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", {"deviceId": this.navParams.get('id'), "image": this.image}).subscribe(
             // Successful responses call the first callback.
             (data) => {Logger.log("Image uploaded successfully.")},
             // Errors will call this callback instead:
