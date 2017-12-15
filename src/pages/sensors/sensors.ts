@@ -238,9 +238,9 @@ export class SensorsPage {
 
     //options to configure how the picture should be taken
     let pictureOpts: CameraPreviewPictureOptions = {
-      width: 1280,
-      height: 1280,
-      quality: 85
+      width: 600,
+      height: 600,
+      quality: 30
     };
 
     // start the camera preview
