@@ -5,19 +5,22 @@ to a dashboard via IBM Watson IoT Platform. While each of the IoT devices is mea
 
 To get some first impressions of the demo setup, have a look at the following document: [Demo-Setup.pptx](/documentation/Demo-Setup.pptx)
 
-**The demo focuses mainly on three container tracking use-cases:**
+### Focused Container Tracking Use-Cases
+The demo focuses mainly on three container tracking use-cases:
 1. Tracking the location
 2. Tracking the container handling and orientation
 3. Looking remotely insight containers
 
-**The following features of the IBM Watson IoT Platform get demonstrated through this demo:**
+### Demonstrated Functions of the IBM Watson IoT Platform
+The following features of the IBM Watson IoT Platform get demonstrated through this demo:
 1. connecting IoT devices to the platform
 2. sending data from an IoT device to the platform
 3. connecting third-party apps (like a dashboard) to the platform to process the IoT data
 4. sending a command to an IoT device via the platform
 5. the concept behind edge analytics
-6. the high flexibility of the platform since most of the functionality can be accessed via APIs
-7. how easy it is to build an IoT PoC using the platform
+6. connecting a Cloudant DB via the extensions to the platform in order to archive all the IoT data
+7. the high flexibility of the platform since most of the functionality can be accessed via APIs
+8. how easy it is to build an IoT PoC using the platform
 
 ### Implemented Functionality
 The following features are currently implemented:
@@ -37,12 +40,19 @@ The following features are currently implemented:
 4. **Taking images of the insight of the container**
     - the IoT devices are abel to receive a "takePicture" command via the IBM Watson IoT Platform
     - the dashboard has a button through which the "takePicture" command can be triggered for a specific IoT device
-    - 
+    
 5. **Simulating edge analytics**
 6. **Giving an overview of all containers** 
 7. **Show all available data about one container**
 
 ### Envisioned Demo Setup
+The following image gives an overview about the system architecture this demo is based on:
+![architecture](/documentation/architecture.png)
+
+The demo can be given using multiple IoT devices (recommended number: 3) since the dashboard supports multiple devices. To enhance the quality
+of the demo it is possible to build small containers and bind smartphones to those as shown on the following picture:
+![architecture](/documentation/container.png)
+
 
 
 Ionic Application (IoT Device)
@@ -73,28 +83,27 @@ The third and fourth stage are not directly linked to each other. Instead, the "
 
 Since the dashboard contains buttons and a selector the sixth stage is responsible for handling the user interactions. (e.g. sending a command to an IoT device or removing data) 
 
-### Remove All Data Stored in Flow-Context
+### Remove All Data Stored in the Flow-Context
 In order to easily delete all the data from the flow-context the "Remove all data" injector has been added to the NodeRED flow.
   
 
 Setup the demo
 ====================================
-Three things are needed in order to setup the demo:
+In order to setup the demo the following components are required:
 - [Instance of the IBM Watson IoT Platform](https://internetofthings.ibmcloud.com/)
-- Android/iOS device
 - [NodeRED Server](https://nodered.org/)
+- Android/iOS device
+- [Cloudant DB](https://developer.ibm.com/clouddataservices/docs/cloudant/) (optionally)
 
-
-![architecture](/documentation/architecture.png)
 
 ### Create and configure the IBM Watson IoT Platform
 1. an IBM Watson IoT Platform instance can be deployed for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps)
     1. Create an IBM Cloud account
     2. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalogue
     3. create an instance of the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service 
-2) visit the UI of the created Internet of Things Platform [service](https://internetofthings.ibmcloud.com/)
-3) register as many IoT devices as wanted using "token" as authentication method ([instructions](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/))
-4) register an application to enable the NodeRED Dashboard to access the IoT data later on  
+2. visit the UI of the created Internet of Things Platform [service](https://internetofthings.ibmcloud.com/)
+3. register as many IoT devices as wanted using "token" as authentication method ([instructions](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/))
+4. register an application to enable the NodeRED Dashboard to access the IoT data later on  
 
 ### Deploy the NodeRED Dashboard
 
@@ -104,4 +113,9 @@ Three things are needed in order to setup the demo:
 2. build the application
 3. install the application
 4. configure the IoT device 
+
+
+### Connecting a Cloudant DB
+This step is not necessary for the demo but can still be performed in order to demonstrated how easy it is to achieve all the IoT data send to the IBM Watson IoT Platform.
+
 
