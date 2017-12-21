@@ -1,4 +1,5 @@
-#Container Tracker Demo
+Container Tracker Demo
+====================================
 This demo showcases the abilities of the IBM Watson IoT Platform. More specifically the demo makes it possible to connect multiple smartphones as IoT devices 
 to a dashboard via IBM Watson IoT Platform. While each of the IoT devices is meant to be installed in a container, the dashboard shows the status of each container.
 
@@ -18,7 +19,7 @@ To get some first impressions of the demo setup, have a look at the following do
 6. the high flexibility of the platform since most of the functionality can be accessed via APIs
 7. how easy it is to build an IoT PoC using the platform
 
-###Implemented Functionality
+### Implemented Functionality
 The following features are currently implemented:
 1. **Tracking the location of the container**
     - the location gets determined using the GPS sensor of smartphones
@@ -41,21 +42,23 @@ The following features are currently implemented:
 6. **Giving an overview of all containers** 
 7. **Show all available data about one container**
 
-###Envisioned Demo Setup
+### Envisioned Demo Setup
 
 
-#Ionic Application (IoT Device)
+Ionic Application (IoT Device)
+====================================
 This application has only been tested with a variety of iOS device yet. Nevertheless, it should also function with Android devices since all the used Cordova plugins support both platforms. 
 
-#NodeRED Dashboard
+NodeRED Dashboard
+====================================
 Ergänzend zu dieser IoT App wurde ein Dashbord entwicklet, welches die IoT Daten visualisiert.
 Das Dashboard ist ein Node-RED Flow und kann im Ordner "node-red-flow.json" gefunden werden. 
 
-###Used NodeRED Nodes
+### Used NodeRED Nodes
 
-###Input Nodes
+### Input Nodes
 
-###Applied Implementation Concept
+### Applied Implementation Concept
 The NodeRED flow is divided into four stages:
 1. input nodes
 2. processing the input
@@ -70,11 +73,12 @@ The third and fourth stage are not directly linked to each other. Instead, the "
 
 Since the dashboard contains buttons and a selector the sixth stage is responsible for handling the user interactions. (e.g. sending a command to an IoT device or removing data) 
 
-###Remove All Data Stored in Flow-Context
+### Remove All Data Stored in Flow-Context
 In order to easily delete all the data from the flow-context the "Remove all data" injector has been added to the NodeRED flow.
   
 
-#Setup the demo
+Setup the demo
+====================================
 Three things are needed in order to setup the demo:
 - [Instance of the IBM Watson IoT Platform](https://internetofthings.ibmcloud.com/)
 - Android/iOS device
@@ -83,7 +87,7 @@ Three things are needed in order to setup the demo:
 
 ![architecture](/documentation/architecture.png)
 
-###Create and configure the IBM Watson IoT Platform
+### Create and configure the IBM Watson IoT Platform
 1. an IBM Watson IoT Platform instance can be deployed for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps)
     1. Create an IBM Cloud account
     2. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalogue
@@ -92,9 +96,9 @@ Three things are needed in order to setup the demo:
 3) register as many IoT devices as wanted using "token" as authentication method ([instructions](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/))
 4) register an application to enable the NodeRED Dashboard to access the IoT data later on  
 
-###Deploy the NodeRED Dashboard
+### Deploy the NodeRED Dashboard
 
-###Build and configure the Ionic app
+### Build and configure the Ionic app
 1. configure the application
     1. NodeRED server URL for the picture upload
 2. build the application
