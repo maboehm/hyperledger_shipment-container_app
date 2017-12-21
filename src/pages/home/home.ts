@@ -5,6 +5,11 @@ import {Logger} from "../../app/logger";
 import {AppConfig} from "../../app/app.config";
 import {Storage} from "@ionic/storage";
 
+/**
+ * This class represents the start screen of the app.
+ * Via this app page the IoT device can be configured with the correct credentials in order to connect it to the
+ * IBM Watson IoT Platform. This class does also make sure that the configuration gets saved persistently to the app storage.
+ */
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -48,6 +53,10 @@ export class HomePage {
     });
   }
 
+  /**
+   * This method opens the sensor page and provides the sensor page with the login data of the
+   * IoT device so that the device can be contacted to the IBM Watson IoT Platform.
+   */
   private openSensorPage() {
     // store the configuration data to the local app storage
     this.storage.set(AppConfig.STORAGE_KEY_ORGANISATION, this.organisation);

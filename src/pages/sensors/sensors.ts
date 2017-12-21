@@ -15,10 +15,12 @@ import {HttpClient} from "@angular/common/http";
 import {Insomnia} from "@ionic-native/insomnia";
 
 /**
- * Generated class for the SensorsPage page.
+ * This class represents the sensor page which collects the sensor data form the device and sends it to the IBM Watson IoT Platform.
+ * Therefore, this class first connects the device as an IoT device to the IBM Watson IoT Platform using the credentials provided via {@NavParams}.
  *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
+ * As soon as the class was able to build up a connection to the IBM Watson IoT Platform, the class collects the wanted data from the device sensors and listens to commands send via the IBM Watson IoT Platform to the device.
+ *
+ * In order to make sure that the device will not fall a sleep while collecting data {@Insomnia} gets used to keep the device awake while this sensor page is open.
  */
 
 @IonicPage()
@@ -74,6 +76,14 @@ export class SensorsPage {
     });
   }
 
+  /**
+   * This method gets called as soon as the page got loaded.
+   * The method performs the following steps:
+   * 1. Keep device awake
+   * 2. Connect device as IoT device to the IBM Watson IoT Platform
+   * 3. Once connected it collects the wanted sensor data in a specific interval and sends it to the IBM Watson IoT Platform
+   * 4. The method subscribes the device to incoming commands from the IBM Watson IoT Platform.
+   */
   private ionViewDidLoad() {
     // let the app stay awake
     this.insomnia.keepAwake().then(
@@ -113,6 +123,13 @@ export class SensorsPage {
     });
   }
 
+  /**
+   * This method gets called once the page gets closed.
+   * The method performs the following steps:
+   * 1. stop keeping the device awake
+   * 2. cancel the sensor data collecting interval
+   * 3. disconnect the device from the IBM Watson IoT Platform
+   */
   private ionViewWillLeave() {
     // allow the phone to sleep
     this.insomnia.allowSleepAgain().then(
@@ -129,6 +146,22 @@ export class SensorsPage {
   }
 
 
+  /**
+   * This method is responsible for sending the data of the device to the IBM Watson IoT Platform.
+   * Therefor, the method stores all the data in one JSON object.
+   *
+   * @param {number} accelerationX
+   * @param {number} accelerationY
+   * @param {number} accelerationZ
+   * @param {number} accelerationTime
+   * @param {number} gyroscopeX
+   * @param {number} gyroscopeY
+   * @param {number} gyroscopeZ
+   * @param {number} gyroscopeTime
+   * @param {number} geolocationLatitude
+   * @param {number} geolocationLongitude
+   * @param {number} geolocationTime
+   */
   private sendStatusToIotPlatform(accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number, gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number, geolocationLatitude: number, geolocationLongitude: number, geolocationTime: number) {
     let deviceData = {
       acceleration: {
@@ -153,12 +186,18 @@ export class SensorsPage {
     this.iotDevice.publish("status", "json", JSON.stringify(deviceData), 0);
   }
 
+  /**
+   * This method calls all the different functions responsible for reading the data from sensors.
+   */
   private updateAllData() {
     this.updateAcceleratorData();
     this.updateGyroscopeData();
     this.updateGeolocationData();
   }
 
+  /**
+   * This method is responsible for collecting the acceleration data of the device and storing it to the data field of this class.
+   */
   private updateAcceleratorData() {
     this.deviceMotion.getCurrentAcceleration().then(
       (acceleration: DeviceMotionAccelerationData) => {
@@ -175,6 +214,9 @@ export class SensorsPage {
     );
   }
 
+  /**
+   * This method is responsible for collecting the gyroscope data of the device and storing it to the data field of this class.
+   */
   private updateGyroscopeData() {
     let options: GyroscopeOptions = {
       frequency: 1000
@@ -197,6 +239,9 @@ export class SensorsPage {
     });
   }
 
+  /**
+   * This method is responsible for collecting the geolocation data of the device and storing it to the data field of this class.
+   */
   private updateGeolocationData() {
     this.geolocation.getCurrentPosition().then((geoposition: Geoposition) => {
       this.geolocationLatitude = geoposition.coords.latitude;
