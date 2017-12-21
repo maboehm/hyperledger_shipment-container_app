@@ -151,7 +151,7 @@ In order to setup the demo the following components are required:
 ### Deploy and Configure the NodeRED Dashboard
 1. Host a NodeRED instance (e.g. for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps) using the [Node-RED Starter](https://console.bluemix.net/catalog/starters/node-red-starter?taxonomyNavigation=apps) boilerplate)
 2. Add the following npm packages to the package.json of the NodeRED instance
-    ```javascript
+    ```
     {
       [...]
       "dependencies": {  
