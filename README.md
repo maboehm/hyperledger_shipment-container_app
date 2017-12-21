@@ -151,6 +151,7 @@ In order to setup the demo the following components are required:
 ### Deploy and Configure the NodeRED Dashboard
 1. Host a NodeRED instance (e.g. for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps) using the [Node-RED Starter](https://console.bluemix.net/catalog/starters/node-red-starter?taxonomyNavigation=apps) boilerplate)
 2. Add the following npm packages to the package.json of the NodeRED instance
+    
     ```
     {
       [...]
@@ -165,6 +166,7 @@ In order to setup the demo the following components are required:
     }
     ```
 3. Add the following configuration to the "settings.js" (under IBM Cloud this file is called "bluemix-settings.js"") of the NodeRED instance to increase the allowed size of HTTP requests in order to be able to sen images properly and to allow CORS
+    
     ```javascript
     var settings = module.exports = {
          [...]
