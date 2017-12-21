@@ -131,7 +131,7 @@ Since the dashboard contains buttons and a selector the sixth stage is responsib
 In order to easily delete all the data from the flow-context the "Remove all data" injector has been added to the NodeRED flow.
   
 
-Setup the demo
+Setup the Demo
 ====================================
 In order to setup the demo the following components are required:
 - [Instance of the IBM Watson IoT Platform](https://internetofthings.ibmcloud.com/)
@@ -140,7 +140,7 @@ In order to setup the demo the following components are required:
 - [Cloudant DB](https://developer.ibm.com/clouddataservices/docs/cloudant/) (optional)
 
 
-### Create and configure the IBM Watson IoT Platform
+### Create and Configure the IBM Watson IoT Platform
 1. Create an IBM Watson IoT Platform instance for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps)
     1. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalogue
     2. Create an instance of the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service 
@@ -151,7 +151,7 @@ In order to setup the demo the following components are required:
 ### Deploy and Configure the NodeRED Dashboard
 1. Host a NodeRED instance (e.g. for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps) using the [Node-RED Starter](https://console.bluemix.net/catalog/starters/node-red-starter?taxonomyNavigation=apps) boilerplate)
 2. Add the following npm packages to the package.json of the NodeRED instance
-    ```json
+    ```javascript
     {
       [...]
       "dependencies": {  
