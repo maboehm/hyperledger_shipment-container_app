@@ -33,35 +33,35 @@ The following features are currently implemented:
     - the data of the acceleration sensor gets represented in a line graph consisting of three lines while each line represents one of the three spatial axes
     - the data gets send to the dashboard via the IBM Watson IoT Platform and visualized on the dashboard in real-time
 3. **Tracking the handling of the container**
-    - based on the gyroscope sensor of the smartphone the forces that act on the container get determined (e.g. if the container gets suddenly accelerated or stopped like in the case of an fall the sensor will detect it)
+    - based on the gyroscope sensor of the smartphone the forces that act on the container get determined (e.g. if the container gets suddenly accelerated or stopped like in the case of a fall the sensor will detect it)
     - the dashboard shows if the container gets currently handled good or not in form of a status message
     - the data of the gyroscope sensor gets represented in a line graph consisting of three lines while each line represents one of the three spatial axes
     - the data gets send to the dashboard via the IBM Watson IoT Platform and visualized on the dashboard in real-time
 4. **Taking images of the insight of the container**
-    - the IoT devices are abel to receive a "takePicture" command via the IBM Watson IoT Platform
+    - the IoT devices are able to receive a "takePicture" command via the IBM Watson IoT Platform
     - the dashboard has a button through which the "takePicture" command can be triggered for a specific IoT device
     - once the smartphone receives the command it automatically takes a picture with the back camera and the led turned on (because of a problem with the [cordova-plugin-camera-preview](https://github.com/cordova-plugin-camera-preview/) this takes up to 10 seconds)
-    - once the picture as been taken the IoT device sends it directly to the NodeRED server via a POST request since the IBM Watson IoT Platform does not support messages which or larger than a few kb 
+    - once the picture has been taken the IoT device sends it directly to the NodeRED server via a POST request since the IBM Watson IoT Platform does not support messages which or larger than a few kb 
 5. **Simulating edge analytics**
-    - in order to showcase the idea behind [edge analytics](http://searchbusinessanalytics.techtarget.com/definition/edge-analytics) a switch as been added that controls if the acceleration and gyroscope sensor data should only be added to the graphs if they indicate an exception (this simulates that the device is only sending data if the device is in an exception stage) 
+    - in order to showcase the idea behind [edge analytics](http://searchbusinessanalytics.techtarget.com/definition/edge-analytics) a switch has been added that controls if the acceleration and gyroscope sensor data should only be added to the graphs if they indicate an exception (this simulates that the device is only sending data if the device is in an exception stage) 
 6. **Exceptions**
-    - based on the data received form the acceleration and gyroscope data of the devices, the status of the device gets determined by the NodeRED flow
+    - based on the data received from the acceleration and gyroscope data of the devices, the status of the device gets determined by the NodeRED flow
     - if an exception status gets determined an exception message gets generated and presented on the dashboard
 7. **Giving an overview of all containers** 
-    - do give the user an overview about all devices, the dashboard has a home page which lists all the devices known to the dashboard
-    - besides the device name the status, which determines if their are exceptions for a specific device, gets displayed (green circle indicates "no exceptions"; red circle indicates "exceptions")
+    - to give the user an overview of all devices, the dashboard has a home page which lists all the devices known to the dashboard
+    - besides the device name the status, which determines if there are exceptions for a specific device, gets displayed (green circle indicates "no exceptions"; red circle indicates "exceptions")
 8. **Show all available data about one container**
     - the dashboard has a device page which displays all the information known about one IoT device
     - which dive to display can be selected via a selector
     - to change the device status of a device from red to green all exceptions of the device have to be deleted via the button "Clear Exceptions"
 
 ### Envisioned Demo Setup
-The following image gives an overview about the system architecture this demo is based on:
+The following image gives an overview of the system architecture this demo is based on:
 
 ![architecture](/documentation/architecture.png)
 
 The demo can be given using multiple IoT devices (recommended number: 3) since the dashboard supports multiple devices. To enhance the quality
-of the demo it is possible to build small containers and bind smartphones to those as shown on the following picture:
+of the demo it is possible to build small containers and bind smartphones to those as shown in the following picture:
 
 ![architecture](/documentation/container.png)
 
@@ -86,9 +86,9 @@ This application has only been tested with a variety of iOS device yet. Neverthe
     - Connects device to the IBM Watson IoT Platform using the configuration entered on the home page
     - Makes sure the device stays awake as long as the sensor page is open
     - Collects all sensor data and sends it to the IBM Watson IoT Platform as a JSON object
-    - Listens for "takePicture" commands send by the IBM Watson IoT Platform and takes an picture and send it to the NodeRED dashboard if requested
+    - Listens for "takePicture" commands send by the IBM Watson IoT Platform and takes a picture and send it to the NodeRED dashboard if requested
 
-### Senors Supportet by the App
+### Senors Supported by the App
 1. Gyroscope
 2. Accelerator
 3. Camera
@@ -100,7 +100,7 @@ For connecting the ionic app as an IoT device to the IBM Watson IoT Platform the
 NodeRED Dashboard
 ====================================
 The NodeRED flow, as it can be found in the folder [dashboard](/dashboard), connects to the IBM Watson IoT Platform as an application.
-It receives all the data that gets send to the IBM Watson IoT Platform and displays it in a dashboard.
+It receives all the data that gets sent to the IBM Watson IoT Platform and displays it on a dashboard.
 
 ### Used NodeRED Nodes
 Besides the basic NodeRED nodes the following npm packages have been used to implement the dashboard:
@@ -121,9 +121,9 @@ The NodeRED flow is divided into four stages:
 5. Loading the data into the dashboard UI elements
 6. Logic of the UI elements
 
-All the data gets stored to the [flow-context](https://nodered.org/docs/writing-functions#flow-context) in the third stage.
+All the data gets stored in the [flow-context](https://nodered.org/docs/writing-functions#flow-context) in the third stage.
 
-The third and fourth stage are not directly linked to each other. Instead, the "Reload UI" node calls all the functions responsible for loading the data from the [flow-context](https://nodered.org/docs/writing-functions#flow-context) and updating the UI elements twice a second.
+The third and fourth stage is not directly linked to each other. Instead, the "Reload UI" node calls all the functions responsible for loading the data from the [flow-context](https://nodered.org/docs/writing-functions#flow-context) and updating the UI elements twice a second.
 
 Since the dashboard contains buttons and a selector the sixth stage is responsible for handling the user interactions. (e.g. sending a command to an IoT device or removing data) 
 
@@ -142,7 +142,7 @@ In order to setup the demo the following components are required:
 
 ### Create and Configure the IBM Watson IoT Platform
 1. Create an IBM Watson IoT Platform instance for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps)
-    1. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalogue
+    1. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalog
     2. Create an instance of the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service 
 2. Visit the UI of the created Internet of Things Platform [service](https://internetofthings.ibmcloud.com/)
 3. Register as many IoT devices as wanted using "token" as authentication method ([instructions](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/))
@@ -193,14 +193,20 @@ In order to setup the demo the following components are required:
 1. Configure the application
     1. Open [/src/app/app.config.ts](/src/app/app.config.ts)
     2. NodeRED server URL for the picture upload
-2. build the application
-3. install the application
-4. configure the IoT device 
+2. Build the application
+
+    ```sh
+    $ npm install
+    $ ionic cordova build
+    ```
+3. Install the build application on your device
+4. Start the app
+5. Enter the organization name of your IBM Watson IoT Platform instance, the device type, the device ID and authentication token as generated while registering the IoT devices to the IBM Watson IoT Platform 
   
 
 
 ### Connect a Cloudant DB (optional)
-This step is not necessary for the demo but can still be performed in order to demonstrated how easy it is to archive all the IoT data send to the IBM Watson IoT Platform in a NoSQL database.
+This step is not necessary for the demo but can still be performed in order to demonstrate how easy it is to archive all the IoT data send to the IBM Watson IoT Platform in a NoSQL database.
 
 1. Host a Cloudant database for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps) using the [Cloudant NoSQL DB](https://console.bluemix.net/catalog/services/cloudant-nosql-db?taxonomyNavigation=apps) service
 2. Connect the Cloudant instance to your IBM Watson IoT Platform instance ([instructions](https://developer.ibm.com/recipes/tutorials/cloudant-nosql-db-as-historian-data-storage-for-ibm-watson-iot-parti/#r_step3)) 
