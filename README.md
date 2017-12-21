@@ -47,10 +47,12 @@ The following features are currently implemented:
 
 ### Envisioned Demo Setup
 The following image gives an overview about the system architecture this demo is based on:
+
 ![architecture](/documentation/architecture.png)
 
 The demo can be given using multiple IoT devices (recommended number: 3) since the dashboard supports multiple devices. To enhance the quality
 of the demo it is possible to build small containers and bind smartphones to those as shown on the following picture:
+
 ![architecture](/documentation/container.png)
 
 
