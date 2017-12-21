@@ -13,14 +13,14 @@ The demo focuses mainly on three container tracking use-cases:
 
 ### Demonstrated Functions of the IBM Watson IoT Platform
 The following features of the IBM Watson IoT Platform get demonstrated through this demo:
-1. connecting IoT devices to the platform
-2. sending data from an IoT device to the platform
-3. connecting third-party apps (like a dashboard) to the platform to process the IoT data
-4. sending a command to an IoT device via the platform
-5. the concept behind edge analytics
-6. connecting a Cloudant DB via the extensions to the platform in order to archive all the IoT data
-7. the high flexibility of the platform since most of the functionality can be accessed via APIs
-8. how easy it is to build an IoT PoC using the platform
+1. Connecting IoT devices to the platform
+2. Sending data from an IoT device to the platform
+3. Connecting third-party apps (like a dashboard) to the platform to process the IoT data
+4. Sending a command to an IoT device via the platform
+5. The concept behind edge analytics
+6. Connecting a Cloudant DB via the extensions to the platform in order to archive all the IoT data
+7. The High flexibility of the platform since most of the functionality can be accessed via APIs
+8. How easy it is to build an IoT PoC using the platform
 
 ### Implemented Functionality
 The following features are currently implemented:
@@ -81,18 +81,18 @@ This application has only been tested with a variety of iOS device yet. Neverthe
 
 ### Pages of the App
 1. Home Page
-    - provides a form to configure the IoT device with the needed credentials in order to connect it to the IBM Watson IoT Platform 
+    - Provides a form to configure the IoT device with the needed credentials in order to connect it to the IBM Watson IoT Platform 
 2. Sensor Page
-    - connects device to the IBM Watson IoT Platform using the configuration entered on the home page
-    - makes sure the device stays awake as long as the sensor page is open
-    - collects all sensor data and sends it to the IBM Watson IoT Platform as a JSON object
-    - listens for "takePicture" commands send by the IBM Watson IoT Platform and takes an picture and send it to the NodeRED dashboard if requested
+    - Connects device to the IBM Watson IoT Platform using the configuration entered on the home page
+    - Makes sure the device stays awake as long as the sensor page is open
+    - Collects all sensor data and sends it to the IBM Watson IoT Platform as a JSON object
+    - Listens for "takePicture" commands send by the IBM Watson IoT Platform and takes an picture and send it to the NodeRED dashboard if requested
 
 ### Senors Supportet by the App
-1. gyroscope
-2. accelerator
-3. camera
-4. geolocation 
+1. Gyroscope
+2. Accelerator
+3. Camera
+4. Geolocation / GPS
 
 ### Used Library to Connect to the IBM Watson IoT Platform
 For connecting the ionic app as an IoT device to the IBM Watson IoT Platform the npm package [ibmiotf](https://github.com/ibm-watson-iot/iot-nodejs) has been used.
@@ -105,24 +105,21 @@ It receives all the data that gets send to the IBM Watson IoT Platform and displ
 ### Used NodeRED Nodes
 Besides the basic NodeRED nodes the following npm packages have been used to implement the dashboard:
 1. [node-red-contrib-scx-ibmiotapp](https://github.com/ibm-watson-iot/node-red-contrib-scx-ibmiotapp)
-    - for building up a connection to the IBM Watson IoT Platform
+    - For building up a connection to the IBM Watson IoT Platform
 2. [node-red-dashboard](https://github.com/node-red/node-red-dashboard)
-    - for generating the dashboard ui usind NodeRED
-    - the dashboard can be accessed under "<NodeRED-Instance-URL>/ui"
+    - For generating the dashboard ui usind NodeRED
+    - The dashboard can be accessed under the following URL: ".../ui"
 3. [node-red-contrib-web-worldmap ](https://github.com/dceejay/RedMap)
-    - for showing the location of the devices in a map
-    - 
-
-### Input Nodes
+    - For showing the location of the devices in form of a map
 
 ### Applied Implementation Concept
 The NodeRED flow is divided into four stages:
-1. input nodes
-2. processing the input
-3. storing the input
-4. loading the input data from the storage
-5. loading the data into the dashboard UI elements
-6. logic of the UI elements
+1. Input nodes
+2. Processing the input
+3. Storing the input
+4. Loading the input data from the storage
+5. Loading the data into the dashboard UI elements
+6. Logic of the UI elements
 
 All the data gets stored to the [flow-context](https://nodered.org/docs/writing-functions#flow-context) in the third stage.
 
@@ -140,36 +137,71 @@ In order to setup the demo the following components are required:
 - [Instance of the IBM Watson IoT Platform](https://internetofthings.ibmcloud.com/)
 - [NodeRED Server](https://nodered.org/)
 - Android/iOS device
-- [Cloudant DB](https://developer.ibm.com/clouddataservices/docs/cloudant/) (optionally)
+- [Cloudant DB](https://developer.ibm.com/clouddataservices/docs/cloudant/) (optional)
 
 
 ### Create and configure the IBM Watson IoT Platform
-1. an IBM Watson IoT Platform instance can be deployed for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps)
-    1. Create an IBM Cloud account
-    2. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalogue
-    3. create an instance of the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service 
-2. visit the UI of the created Internet of Things Platform [service](https://internetofthings.ibmcloud.com/)
-3. register as many IoT devices as wanted using "token" as authentication method ([instructions](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/))
-4. register an application to enable the NodeRED Dashboard to access the IoT data later on  
+1. Create an IBM Watson IoT Platform instance for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps)
+    1. Select the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service form the service catalogue
+    2. Create an instance of the [Internet of Things Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform?taxonomyNavigation=apps) service 
+2. Visit the UI of the created Internet of Things Platform [service](https://internetofthings.ibmcloud.com/)
+3. Register as many IoT devices as wanted using "token" as authentication method ([instructions](https://developer.ibm.com/recipes/tutorials/how-to-register-devices-in-ibm-iot-foundation/))
+4. Register an application to enable the NodeRED Dashboard to access the IoT data later on  
 
 ### Deploy and Configure the NodeRED Dashboard
-1. Host a NodeRED instance
-2. add the following npm packages to the package.json of the NodeRED instance
-3. add the following configuration to the "settings.js" of the NodeRED instance
-4. start the NodeRED instance
-5. import the NodeRED flow
-6. configure the credentials needed to connect to the IBM Watson IoT Platform
+1. Host a NodeRED instance (e.g. for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps) using the [Node-RED Starter](https://console.bluemix.net/catalog/starters/node-red-starter?taxonomyNavigation=apps) boilerplate)
+2. Add the following npm packages to the package.json of the NodeRED instance
+    ```json
+    {
+      [...]
+      "dependencies": {  
+              [...]
+              "node-red-contrib-scx-ibmiotapp": "0.0.47",
+              "node-red-dashboard": "^2.6.2",
+              "node-red-contrib-web-worldmap":"1.x",
+              [...]
+      }
+      [...]
+    }
+    ```
+3. Add the following configuration to the "settings.js" (under IBM Cloud this file is called "bluemix-settings.js"") of the NodeRED instance to increase the allowed size of HTTP requests in order to be able to sen images properly and to allow CORS
+    ```javascript
+    var settings = module.exports = {
+         [...]
+        
+        // allows CORS
+        httpNodeCors: {origin: true},
+        
+        // allows HTTP requests to be 5mb large
+        apiMaxLength: '60mb',
+    
+        [...]
+    };
+    ```
+4. Start the NodeRED instance
+5. Import the NodeRED flow from [node-red-flow.json](/dashboard/node-red-flow.json) and deploy it ([introductions](https://developers.sensetecnic.com/article/how-to-import-a-node-red-flow/) )
+6. Configure the credentials needed to connect to the IBM Watson IoT Platform
+    1. Open the "IBM Watson IoT Platform" node
+    2. Edit the API Key
+    3. Enter the API Key and API Token generated while registering a new application to the IBM Watson IoT Platform
+    4. Confirm the changes and deploy the flow
+7. Access the dashboard via the following URL: ".../ui"
 
-### Build and configure the Ionic app
-1. configure the application
-    1. NodeRED server URL for the picture upload
+### Build and Configure the Ionic App
+1. Configure the application
+    1. Open [/src/app/app.config.ts](/src/app/app.config.ts)
+    2. NodeRED server URL for the picture upload
 2. build the application
 3. install the application
 4. configure the IoT device 
+  
 
 
-### Connecting a Cloudant DB
-This step is not necessary for the demo but can still be performed in order to demonstrated how easy it is to achieve all the IoT data send to the IBM Watson IoT Platform.
+### Connect a Cloudant DB (optional)
+This step is not necessary for the demo but can still be performed in order to demonstrated how easy it is to archive all the IoT data send to the IBM Watson IoT Platform in a NoSQL database.
+
+1. Host a Cloudant database for free via [IBM Cloud](https://console.bluemix.net/dashboard/apps) using the [Cloudant NoSQL DB](https://console.bluemix.net/catalog/services/cloudant-nosql-db?taxonomyNavigation=apps) service
+2. Connect the Cloudant instance to your IBM Watson IoT Platform instance ([instructions](https://developer.ibm.com/recipes/tutorials/cloudant-nosql-db-as-historian-data-storage-for-ibm-watson-iot-parti/#r_step3)) 
 
 
 Author
