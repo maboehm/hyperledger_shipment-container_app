@@ -11,7 +11,6 @@ export class Logger {
 
 
 /////////////////////////////////////////////Methods///////////////////////////////////////////////
-
   public static log(msg: any) {
     if (AppConfig.DEVELOPMENT) {
       console.log(msg);

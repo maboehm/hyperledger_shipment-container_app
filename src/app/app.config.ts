@@ -12,6 +12,9 @@ export class AppConfig {
   public static get STORAGE_KEY_ORGANISATION(): string {
     return "organisation";
   };
+  public static get STORAGE_KEY_SHIPMENT_ID(): string {
+    return "shipmentId";
+  };
   public static get STORAGE_KEY_DEVICE_ID(): string {
     return "deviceId";
   };

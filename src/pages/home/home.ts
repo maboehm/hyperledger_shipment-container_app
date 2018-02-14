@@ -20,6 +20,7 @@ export class HomePage {
   private deviceType: string;
   private deviceId: string;
   private authenticationToken: string;
+  private shipmentId: string;
 
   constructor(public navCtrl: NavController, private storage: Storage) {
     // read configuration from the storage or set it to undefined
@@ -28,6 +29,13 @@ export class HomePage {
         this.organisation = value;
       } else {
         this.organisation = "";
+      }
+    });
+    this.storage.get(AppConfig.STORAGE_KEY_SHIPMENT_ID).then((value:string) => {
+      if (value != null) {
+        this.shipmentId = value;
+      } else {
+        this.shipmentId = "";
       }
     });
     this.storage.get(AppConfig.STORAGE_KEY_DEVICE_TYPE).then((value:string) => {
@@ -60,6 +68,7 @@ export class HomePage {
   private openSensorPage() {
     // store the configuration data to the local app storage
     this.storage.set(AppConfig.STORAGE_KEY_ORGANISATION, this.organisation);
+    this.storage.set(AppConfig.STORAGE_KEY_SHIPMENT_ID, this.shipmentId);
     this.storage.set(AppConfig.STORAGE_KEY_DEVICE_TYPE, this.deviceType);
     this.storage.set(AppConfig.STORAGE_KEY_DEVICE_ID, this.deviceId);
     this.storage.set(AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN, this.authenticationToken);
@@ -70,7 +79,8 @@ export class HomePage {
       "org": this.organisation,
       "id": this.deviceId,
       "type": this.deviceType,
-      "auth-token": this.authenticationToken
+      "auth-token": this.authenticationToken,
+      "shipment": this.shipmentId
     };
     // call the sensor page to start the tracking
     this.navCtrl.push(SensorsPage, payload);

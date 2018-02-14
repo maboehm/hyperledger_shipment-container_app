@@ -31,7 +31,9 @@ import {Insomnia} from "@ionic-native/insomnia";
 export class SensorsPage {
 
   private iotDevice: any;
-  private updateInterval: any;
+  private updateIntervalWatson: any;
+  private updateIntervalBlockchain: any;
+  private updateIntervalSensors: any;
 
   private accelerationX: number;
   private accelerationY: number;
@@ -91,6 +93,49 @@ export class SensorsPage {
         (error) => Logger.error(error)
     );
 
+    this.setupSensors();
+    this.setupWatsonIoT();
+    this.setupBlockchain();
+  }
+
+  private setupSensors() {
+    this.updateIntervalSensors = setInterval(() => {
+      // update all the data
+      this.updateAllData();
+    }, 400);
+  }
+
+  private setupBlockchain() {
+    Logger.log("Setting up Blockchain!");
+    this.updateIntervalBlockchain = setInterval(() => {
+      let exception = this.checkException(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime)
+      if (exception) {
+        Logger.log(["Exception occured", exception]); 
+        let data = {
+          "$class": "org.kit.blockchain.ShipmentException",
+          "message": exception.message,
+          "gpsLat": this.geolocationLatitude,
+          "gpsLong": this.geolocationLongitude,
+          "shipment": "org.kit.blockchain.Shipment#" + this.navParams.get('shipment'),
+          "timestamp": new Date(exception.time).toISOString()
+        }
+        this.http.post("http://kit-blockchain.duckdns.org:31090/api/ShipmentException", data)
+        .subscribe(data => {
+          Logger.log(["Recieved data", data])
+        })
+
+        /* 
+        {
+  
+}
+http://kit-blockchain.duckdns.org:31090/api/ShipmentException
+*/
+
+      }
+    }, 3000);
+  }
+
+  private setupWatsonIoT() {
     // connect device with IoT Platform
     Logger.log("Trys to connect to Watson IoT Platform!");
     this.iotDevice.connect();
@@ -100,10 +145,7 @@ export class SensorsPage {
       Logger.log("connected to IoT Platform");
 
       // update the device data in a specific interval
-      this.updateInterval = setInterval(() => {
-        // update all the data
-        this.updateAllData();
-
+      this.updateIntervalWatson = setInterval(() => {
         // send data to the IoT platform
         this.sendStatusToIotPlatform(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime);
       }, 500);
@@ -138,11 +180,100 @@ export class SensorsPage {
     );
 
     // end update interval
-    clearInterval(this.updateInterval);
+    clearInterval(this.updateIntervalWatson);
+    clearInterval(this.updateIntervalBlockchain);
+    clearInterval(this.updateIntervalSensors);
     Logger.log("Ended Tracking!");
 
     // disconnect device from IoT platform
     this.iotDevice.disconnect();
+  }
+
+  /**
+   * This method is responsible for sending the data of the device to the IBM Watson IoT Platform.
+   * Therefor, the method stores all the data in one JSON object.
+   *
+   * @param {number} accelerationX
+   * @param {number} accelerationY
+   * @param {number} accelerationZ
+   * @param {number} accelerationTime
+   * @param {number} gyroscopeX
+   * @param {number} gyroscopeY
+   * @param {number} gyroscopeZ
+   * @param {number} gyroscopeTime
+   * @param {number} geolocationLatitude
+   * @param {number} geolocationLongitude
+   * @param {number} geolocationTime
+   */
+  private checkException(
+    accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number, 
+    gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number, 
+    geolocationLatitude: number, geolocationLongitude: number, geolocationTime: number) {
+      let status : any;
+      let exception : any;
+      let deviceId = this.navParams.get('id');
+      if (accelerationZ > 9) {
+        status = {
+             payload: "Correct position",
+             deviceId: deviceId
+         }; 
+     } else if (accelerationZ < -9) {
+         status = {
+             payload: "Upside down",
+             deviceId: deviceId
+         };
+         exception = {
+             message: "Container lies upside down.",
+             deviceId: deviceId,
+             time: accelerationTime
+         };
+     } else if (accelerationX > 9) {
+         status = {
+             payload: "Left side down",
+             deviceId: deviceId
+         };
+         exception = {
+             message: "Container lies left side down.",
+             deviceId: deviceId,
+             time: accelerationTime
+         };
+     } else if (accelerationX < -9) {
+         status = {
+             payload: "Right side down",
+             deviceId: deviceId
+         };
+         exception = {
+             message: "Container lies right side down.",
+             deviceId: deviceId,
+             time: accelerationTime
+         };
+     } else if (accelerationY > 9) {
+         status = {
+             payload: "Turned forward",
+             deviceId: deviceId
+         };
+         exception = {
+             message: "Container is turned forward.",
+             deviceId: deviceId,
+             time: accelerationTime
+         };
+     } else if (accelerationY < -9) {
+         status = {
+             payload: "Turnend backwards",
+             deviceId: deviceId
+         };
+         exception = {
+             message: "Container is turnend backwards.",
+             deviceId: deviceId,
+             time: accelerationTime
+         };
+     } else {
+         status = {
+             payload: "No ground contact",
+             deviceId: deviceId
+         };
+     }
+     return exception;
   }
 
 
@@ -206,10 +337,10 @@ export class SensorsPage {
         this.accelerationZ = acceleration.z;
         this.accelerationTime = acceleration.timestamp;
 
-        Logger.log("Acceleration - /n" +
+        /*Logger.log("Acceleration - /n" +
                    "x: " + acceleration.x +
                    "y: " + acceleration.y +
-                   "z: " + acceleration.z);
+                   "z: " + acceleration.z);*/
       }, (error: any) => Logger.error(error)
     );
   }
@@ -229,10 +360,10 @@ export class SensorsPage {
         this.gyroscopeZ = orientation.z;
         this.gyroscopeTime = orientation.timestamp;
 
-        Logger.log("Orientation - /n" +
-                   "x: " + orientation.x +
-                   "y: " + orientation.y +
-                   "z: " + orientation.z);
+        // Logger.log("Orientation - /n" +
+        //            "x: " + orientation.x +
+        //            "y: " + orientation.y +
+        //            "z: " + orientation.z);
       }
     ).catch((error: any) => {
       Logger.error(JSON.stringify(error));
@@ -248,11 +379,14 @@ export class SensorsPage {
       this.geolocationLongitude = geoposition.coords.longitude;
       this.geolocationTime = geoposition.timestamp;
 
-      Logger.log("Geolocation - /n" +
-                 "geolocationLatitude: " + geoposition.coords.latitude +
-                 "geolocationLongitude: " + geoposition.coords.longitude);
+      // Logger.log("Geolocation - /n" +
+      //            "geolocationLatitude: " + geoposition.coords.latitude +
+      //            "geolocationLongitude: " + geoposition.coords.longitude);
     }).catch((error: any) => {
-      Logger.error(error);
+      //Logger.error(error); //TODO: ändern
+        this.geolocationLatitude = 50;
+        this.geolocationLongitude = 8;
+        this.geolocationTime = Date.now();
     });
   }
 
