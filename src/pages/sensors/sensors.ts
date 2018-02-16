@@ -1,18 +1,14 @@
-import {Component} from "@angular/core";
-import {IonicPage, NavController, NavParams} from "ionic-angular";
-import {Logger} from "../../app/logger";
+import { Component } from "@angular/core";
+import { IonicPage, NavParams } from "ionic-angular";
+import { Logger } from "../../app/logger";
 import IbmIot from "ibmiotf";
-import {AppConfig} from "../../app/app.config";
-import {DeviceMotion, DeviceMotionAccelerationData} from "@ionic-native/device-motion";
-import {Gyroscope, GyroscopeOptions, GyroscopeOrientation} from "@ionic-native/gyroscope";
-import {Geolocation, Geoposition} from "@ionic-native/geolocation";
-import {
-  CameraPreview, CameraPreviewOptions,
-  CameraPreviewPictureOptions
-} from "@ionic-native/camera-preview";
-import {Storage} from "@ionic/storage";
-import {HttpClient} from "@angular/common/http";
-import {Insomnia} from "@ionic-native/insomnia";
+import { AppConfig } from "../../app/app.config";
+import { DeviceMotion, DeviceMotionAccelerationData } from "@ionic-native/device-motion";
+import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from "@ionic-native/gyroscope";
+import { Geolocation, Geoposition } from "@ionic-native/geolocation";
+import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions } from "@ionic-native/camera-preview";
+import { HttpClient } from "@angular/common/http";
+import { Insomnia } from "@ionic-native/insomnia";
 
 /**
  * This class represents the sensor page which collects the sensor data form the device and sends it to the IBM Watson IoT Platform.
@@ -52,7 +48,9 @@ export class SensorsPage {
   private image: string;
 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient, private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation, private cameraPreview: CameraPreview, private storage: Storage, private insomnia: Insomnia) {
+  constructor(private navParams: NavParams, private http: HttpClient,
+    private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation,
+    private cameraPreview: CameraPreview, private insomnia: Insomnia) {
     // Build up device config object - therefore, load the config data
     let config = {
       "org": this.navParams.get('org'),
@@ -86,11 +84,12 @@ export class SensorsPage {
    * 3. Once connected it collects the wanted sensor data in a specific interval and sends it to the IBM Watson IoT Platform
    * 4. The method subscribes the device to incoming commands from the IBM Watson IoT Platform.
    */
+  // tslint:disable-next-line:no-unused-variable
   private ionViewDidLoad() {
     // let the app stay awake
     this.insomnia.keepAwake().then(
-        () => Logger.log('Stays awake.'),
-        (error) => Logger.error(error)
+      () => Logger.log('Stays awake.'),
+      (error) => Logger.error(error)
     );
 
     this.setupSensors();
@@ -110,7 +109,7 @@ export class SensorsPage {
     this.updateIntervalBlockchain = setInterval(() => {
       let exception = this.checkException(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime)
       if (exception) {
-        Logger.log(["Exception occured", exception]); 
+        Logger.log(["Exception occured", exception]);
         let data = {
           "$class": "org.kit.blockchain.ShipmentException",
           "message": exception.message,
@@ -120,13 +119,13 @@ export class SensorsPage {
           "timestamp": new Date(exception.time).toISOString()
         }
         this.http.post("http://kit-blockchain.duckdns.org:31090/api/ShipmentException", data)
-        .subscribe(data => {
-          Logger.log(["Recieved data", data])
-        })
+          .subscribe(data => {
+            Logger.log(["Recieved data", data])
+          })
 
-        /* 
+        /*
         {
-  
+
 }
 http://kit-blockchain.duckdns.org:31090/api/ShipmentException
 */
@@ -153,12 +152,12 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
     });
 
     // listen to commands send to this device for execution
-    this.iotDevice.on("command", (commandName,format,payload,topic) => {
+    this.iotDevice.on("command", (commandName, format, payload, topic) => {
       // if the command is "takePicture"
-      if(commandName === "takePicture") {
+      if (commandName === "takePicture") {
         this.handelTakePictureCommand();
 
-      // if the command is unknown then throw an exception
+        // if the command is unknown then throw an exception
       } else {
         Logger.error("Command not supported: " + commandName);
       }
@@ -172,6 +171,7 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
    * 2. cancel the sensor data collecting interval
    * 3. disconnect the device from the IBM Watson IoT Platform
    */
+  // tslint:disable-next-line:no-unused-variable
   private ionViewWillLeave() {
     // allow the phone to sleep
     this.insomnia.allowSleepAgain().then(
@@ -206,74 +206,74 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
    * @param {number} geolocationTime
    */
   private checkException(
-    accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number, 
-    gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number, 
+    accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number,
+    gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number,
     geolocationLatitude: number, geolocationLongitude: number, geolocationTime: number) {
-      let status : any;
-      let exception : any;
-      let deviceId = this.navParams.get('id');
-      if (accelerationZ > 9) {
-        status = {
-             payload: "Correct position",
-             deviceId: deviceId
-         }; 
-     } else if (accelerationZ < -9) {
-         status = {
-             payload: "Upside down",
-             deviceId: deviceId
-         };
-         exception = {
-             message: "Container lies upside down.",
-             deviceId: deviceId,
-             time: accelerationTime
-         };
-     } else if (accelerationX > 9) {
-         status = {
-             payload: "Left side down",
-             deviceId: deviceId
-         };
-         exception = {
-             message: "Container lies left side down.",
-             deviceId: deviceId,
-             time: accelerationTime
-         };
-     } else if (accelerationX < -9) {
-         status = {
-             payload: "Right side down",
-             deviceId: deviceId
-         };
-         exception = {
-             message: "Container lies right side down.",
-             deviceId: deviceId,
-             time: accelerationTime
-         };
-     } else if (accelerationY > 9) {
-         status = {
-             payload: "Turned forward",
-             deviceId: deviceId
-         };
-         exception = {
-             message: "Container is turned forward.",
-             deviceId: deviceId,
-             time: accelerationTime
-         };
-     } else if (accelerationY < -9) {
-         status = {
-             payload: "Turnend backwards",
-             deviceId: deviceId
-         };
-         exception = {
-             message: "Container is turnend backwards.",
-             deviceId: deviceId,
-             time: accelerationTime
-         };
-     } else {
-         status = {
-             payload: "No ground contact",
-             deviceId: deviceId
-         };
-     }
-     return exception;
+    let status: any;
+    let exception: any;
+    let deviceId = this.navParams.get('id');
+    if (accelerationZ > 9) {
+      status = {
+        payload: "Correct position",
+        deviceId: deviceId
+      };
+    } else if (accelerationZ < -9) {
+      status = {
+        payload: "Upside down",
+        deviceId: deviceId
+      };
+      exception = {
+        message: "Container lies upside down.",
+        deviceId: deviceId,
+        time: accelerationTime
+      };
+    } else if (accelerationX > 9) {
+      status = {
+        payload: "Left side down",
+        deviceId: deviceId
+      };
+      exception = {
+        message: "Container lies left side down.",
+        deviceId: deviceId,
+        time: accelerationTime
+      };
+    } else if (accelerationX < -9) {
+      status = {
+        payload: "Right side down",
+        deviceId: deviceId
+      };
+      exception = {
+        message: "Container lies right side down.",
+        deviceId: deviceId,
+        time: accelerationTime
+      };
+    } else if (accelerationY > 9) {
+      status = {
+        payload: "Turned forward",
+        deviceId: deviceId
+      };
+      exception = {
+        message: "Container is turned forward.",
+        deviceId: deviceId,
+        time: accelerationTime
+      };
+    } else if (accelerationY < -9) {
+      status = {
+        payload: "Turnend backwards",
+        deviceId: deviceId
+      };
+      exception = {
+        message: "Container is turnend backwards.",
+        deviceId: deviceId,
+        time: accelerationTime
+      };
+    } else {
+      status = {
+        payload: "No ground contact",
+        deviceId: deviceId
+      };
+    }
+    return exception;
   }
 
 
@@ -384,9 +384,9 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       //            "geolocationLongitude: " + geoposition.coords.longitude);
     }).catch((error: any) => {
       //Logger.error(error); //TODO: ändern
-        this.geolocationLatitude = 50;
-        this.geolocationLongitude = 8;
-        this.geolocationTime = Date.now();
+      this.geolocationLatitude = 50;
+      this.geolocationLongitude = 8;
+      this.geolocationTime = Date.now();
     });
   }
 
@@ -442,9 +442,9 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
           this.cameraPreview.stopCamera();
 
           // ############# 2. Upload the picture #############
-          this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", {"deviceId": this.navParams.get('id'), "image": this.image}).subscribe(
+          this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", { "deviceId": this.navParams.get('id'), "image": this.image }).subscribe(
             // Successful responses call the first callback.
-            (data) => {Logger.log("Image uploaded successfully.")},
+            (data) => { Logger.log("Image uploaded successfully.") },
             // Errors will call this callback instead:
             (err) => {
               Logger.error('Something went while uploading the image!' + JSON.stringify(err));

@@ -1,8 +1,14 @@
 {
   "rules": {
     "no-duplicate-variable": true,
-    "no-unused-variable": [
-      true
+    "no-unused-variable": true,
+    "max-line-length": [
+      true,
+      {
+        "limit": 120,
+        "ignore-pattern": "(^import |^export {(.*?)})|\\*|//",
+        "ignore-comments": true
+      }
     ]
   },
   "rulesDirectory": [
