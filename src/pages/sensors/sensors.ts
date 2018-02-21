@@ -1,14 +1,26 @@
+import { CameraService } from './../../providers/camera/camera';
 import { Component } from "@angular/core";
-import { IonicPage, NavParams } from "ionic-angular";
+import { IonicPage, NavParams, Platform } from "ionic-angular";
 import { Logger } from "../../app/logger";
 import IbmIot from "ibmiotf";
 import { AppConfig } from "../../app/app.config";
 import { DeviceMotion, DeviceMotionAccelerationData } from "@ionic-native/device-motion";
 import { Gyroscope, GyroscopeOptions, GyroscopeOrientation } from "@ionic-native/gyroscope";
 import { Geolocation, Geoposition } from "@ionic-native/geolocation";
-import { CameraPreview, CameraPreviewOptions, CameraPreviewPictureOptions } from "@ionic-native/camera-preview";
 import { HttpClient } from "@angular/common/http";
 import { Insomnia } from "@ionic-native/insomnia";
+
+interface sensorData {
+  x: number,
+  y: number,
+  z: number,
+  timestamp: number
+}
+interface geoData {
+  lat: number,
+  lon: number,
+  timestamp: number
+}
 
 /**
  * This class represents the sensor page which collects the sensor data form the device and sends it to the IBM Watson IoT Platform.
@@ -18,7 +30,6 @@ import { Insomnia } from "@ionic-native/insomnia";
  *
  * In order to make sure that the device will not fall a sleep while collecting data {@Insomnia} gets used to keep the device awake while this sensor page is open.
  */
-
 @IonicPage()
 @Component({
   selector: "page-sensors",
@@ -27,30 +38,27 @@ import { Insomnia } from "@ionic-native/insomnia";
 export class SensorsPage {
 
   private iotDevice: any;
-  private updateIntervalWatson: any;
-  private updateIntervalBlockchain: any;
-  private updateIntervalSensors: any;
+  private updateIntervalWatson: number;
+  private updateIntervalBlockchain: number;
+  private updateIntervalSensors: number;
 
-  private accelerationX: number;
-  private accelerationY: number;
-  private accelerationZ: number;
-  private accelerationTime: number;
+  public acceleration: sensorData;
+  public gyroscope: sensorData;
+  public geolocation: geoData;
+  public image: string;
 
-  private gyroscopeX: number;
-  private gyroscopeY: number;
-  private gyroscopeZ: number;
-  private gyroscopeTime: number;
+  constructor(private navParams: NavParams, private http: HttpClient, private cameraService: CameraService,
+    private deviceMotionService: DeviceMotion, private gyroscopeService: Gyroscope,
+    private geolocationService: Geolocation,
+    private insomnia: Insomnia, private platform: Platform) {
 
-  private geolocationLatitude: number;
-  private geolocationLongitude: number;
-  private geolocationTime: number;
+    this.setupIotDevice();
+    this.acceleration = { x: 0, y: 0, z: 0, timestamp: 0 };
+    this.gyroscope = { x: 0, y: 0, z: 0, timestamp: 0 };
+    this.geolocation = { lat: 0, lon: 0, timestamp: 0 };
+  }
 
-  private image: string;
-
-
-  constructor(private navParams: NavParams, private http: HttpClient,
-    private deviceMotion: DeviceMotion, private gyroscope: Gyroscope, private geolocation: Geolocation,
-    private cameraPreview: CameraPreview, private insomnia: Insomnia) {
+  private setupIotDevice() {
     // Build up device config object - therefore, load the config data
     let config = {
       "org": this.navParams.get('org'),
@@ -107,14 +115,14 @@ export class SensorsPage {
   private setupBlockchain() {
     Logger.log("Setting up Blockchain!");
     this.updateIntervalBlockchain = setInterval(() => {
-      let exception = this.checkException(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime)
+      let exception = this.checkException(this.acceleration, this.gyroscope, this.geolocation)
       if (exception) {
         Logger.log(["Exception occured", exception]);
         let data = {
           "$class": "org.kit.blockchain.ShipmentException",
           "message": exception.message,
-          "gpsLat": this.geolocationLatitude,
-          "gpsLong": this.geolocationLongitude,
+          "gpsLat": this.geolocation.lat,
+          "gpsLong": this.geolocation.lon,
           "shipment": "org.kit.blockchain.Shipment#" + this.navParams.get('shipment'),
           "timestamp": new Date(exception.time).toISOString()
         }
@@ -122,14 +130,6 @@ export class SensorsPage {
           .subscribe(data => {
             Logger.log(["Recieved data", data])
           })
-
-        /*
-        {
-
-}
-http://kit-blockchain.duckdns.org:31090/api/ShipmentException
-*/
-
       }
     }, 3000);
   }
@@ -146,7 +146,7 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       // update the device data in a specific interval
       this.updateIntervalWatson = setInterval(() => {
         // send data to the IoT platform
-        this.sendStatusToIotPlatform(this.accelerationX, this.accelerationY, this.accelerationZ, this.accelerationTime, this.gyroscopeX, this.gyroscopeY, this.gyroscopeZ, this.gyroscopeTime, this.geolocationLatitude, this.geolocationLongitude, this.geolocationTime);
+        this.sendStatusToIotPlatform(this.acceleration, this.gyroscope, this.geolocation);
       }, 500);
       Logger.log("Started Tracking!");
     });
@@ -190,34 +190,23 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
   }
 
   /**
-   * This method is responsible for sending the data of the device to the IBM Watson IoT Platform.
-   * Therefor, the method stores all the data in one JSON object.
+   * Checks for Exceptions, soley based on acceleration
    *
-   * @param {number} accelerationX
-   * @param {number} accelerationY
-   * @param {number} accelerationZ
-   * @param {number} accelerationTime
-   * @param {number} gyroscopeX
-   * @param {number} gyroscopeY
-   * @param {number} gyroscopeZ
-   * @param {number} gyroscopeTime
-   * @param {number} geolocationLatitude
-   * @param {number} geolocationLongitude
-   * @param {number} geolocationTime
+   * @param {sensorData} acceleration
+   * @param {sensorData} gyroscope
+   * @param {geoData} geolocation
    */
   private checkException(
-    accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number,
-    gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number,
-    geolocationLatitude: number, geolocationLongitude: number, geolocationTime: number) {
+    acceleration: sensorData, gyroscope: sensorData, geolocation: geoData) {
     let status: any;
     let exception: any;
     let deviceId = this.navParams.get('id');
-    if (accelerationZ > 9) {
+    if (acceleration.z > 9) {
       status = {
         payload: "Correct position",
         deviceId: deviceId
       };
-    } else if (accelerationZ < -9) {
+    } else if (acceleration.z < -9) {
       status = {
         payload: "Upside down",
         deviceId: deviceId
@@ -225,9 +214,9 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       exception = {
         message: "Container lies upside down.",
         deviceId: deviceId,
-        time: accelerationTime
+        time: acceleration.timestamp
       };
-    } else if (accelerationX > 9) {
+    } else if (acceleration.x > 9) {
       status = {
         payload: "Left side down",
         deviceId: deviceId
@@ -235,9 +224,9 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       exception = {
         message: "Container lies left side down.",
         deviceId: deviceId,
-        time: accelerationTime
+        time: acceleration.timestamp
       };
-    } else if (accelerationX < -9) {
+    } else if (acceleration.x < -9) {
       status = {
         payload: "Right side down",
         deviceId: deviceId
@@ -245,9 +234,9 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       exception = {
         message: "Container lies right side down.",
         deviceId: deviceId,
-        time: accelerationTime
+        time: acceleration.timestamp
       };
-    } else if (accelerationY > 9) {
+    } else if (acceleration.y > 9) {
       status = {
         payload: "Turned forward",
         deviceId: deviceId
@@ -255,9 +244,9 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       exception = {
         message: "Container is turned forward.",
         deviceId: deviceId,
-        time: accelerationTime
+        time: acceleration.timestamp
       };
-    } else if (accelerationY < -9) {
+    } else if (acceleration.y < -9) {
       status = {
         payload: "Turnend backwards",
         deviceId: deviceId
@@ -265,7 +254,7 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
       exception = {
         message: "Container is turnend backwards.",
         deviceId: deviceId,
-        time: accelerationTime
+        time: acceleration.timestamp
       };
     } else {
       status = {
@@ -281,36 +270,28 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
    * This method is responsible for sending the data of the device to the IBM Watson IoT Platform.
    * Therefor, the method stores all the data in one JSON object.
    *
-   * @param {number} accelerationX
-   * @param {number} accelerationY
-   * @param {number} accelerationZ
-   * @param {number} accelerationTime
-   * @param {number} gyroscopeX
-   * @param {number} gyroscopeY
-   * @param {number} gyroscopeZ
-   * @param {number} gyroscopeTime
-   * @param {number} geolocationLatitude
-   * @param {number} geolocationLongitude
-   * @param {number} geolocationTime
+   * @param {sensorData} acceleration
+   * @param {sensorData} gyroscope
+   * @param {geoData} geolocation
    */
-  private sendStatusToIotPlatform(accelerationX: number, accelerationY: number, accelerationZ: number, accelerationTime: number, gyroscopeX: number, gyroscopeY: number, gyroscopeZ: number, gyroscopeTime: number, geolocationLatitude: number, geolocationLongitude: number, geolocationTime: number) {
+  private sendStatusToIotPlatform(acceleration: sensorData, gyroscope: sensorData, geolocation: geoData) {
     let deviceData = {
       acceleration: {
-        x: accelerationX,
-        y: accelerationY,
-        z: accelerationZ,
-        time: accelerationTime
+        x: acceleration.x,
+        y: acceleration.y,
+        z: acceleration.z,
+        time: acceleration.timestamp
       },
       gyroscope: {
-        x: gyroscopeX,
-        y: gyroscopeY,
-        z: gyroscopeZ,
-        time: gyroscopeTime
+        x: gyroscope.x,
+        y: gyroscope.y,
+        z: gyroscope.z,
+        time: gyroscope.timestamp
       },
       geolocation: {
-        latitude: geolocationLatitude,
-        longitude: geolocationLongitude,
-        time: geolocationTime
+        latitude: geolocation.lat,
+        longitude: geolocation.lon,
+        time: geolocation.timestamp
       }
     };
 
@@ -330,17 +311,15 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
    * This method is responsible for collecting the acceleration data of the device and storing it to the data field of this class.
    */
   private updateAcceleratorData() {
-    this.deviceMotion.getCurrentAcceleration().then(
+    if (!this.platform.is('cordova')) {
+      return;
+    }
+    this.deviceMotionService.getCurrentAcceleration().then(
       (acceleration: DeviceMotionAccelerationData) => {
-        this.accelerationX = acceleration.x;
-        this.accelerationY = acceleration.y;
-        this.accelerationZ = acceleration.z;
-        this.accelerationTime = acceleration.timestamp;
-
-        /*Logger.log("Acceleration - /n" +
-                   "x: " + acceleration.x +
-                   "y: " + acceleration.y +
-                   "z: " + acceleration.z);*/
+        this.acceleration.x = acceleration.x;
+        this.acceleration.y = acceleration.y;
+        this.acceleration.z = acceleration.z;
+        this.acceleration.timestamp = acceleration.timestamp;
       }, (error: any) => Logger.error(error)
     );
   }
@@ -349,21 +328,19 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
    * This method is responsible for collecting the gyroscope data of the device and storing it to the data field of this class.
    */
   private updateGyroscopeData() {
+    if (!this.platform.is('cordova')) {
+      return;
+    }
     let options: GyroscopeOptions = {
       frequency: 1000
     };
 
-    this.gyroscope.getCurrent(options).then(
+    this.gyroscopeService.getCurrent(options).then(
       (orientation: GyroscopeOrientation) => {
-        this.gyroscopeX = orientation.x;
-        this.gyroscopeY = orientation.y;
-        this.gyroscopeZ = orientation.z;
-        this.gyroscopeTime = orientation.timestamp;
-
-        // Logger.log("Orientation - /n" +
-        //            "x: " + orientation.x +
-        //            "y: " + orientation.y +
-        //            "z: " + orientation.z);
+        this.gyroscope.x = orientation.x;
+        this.gyroscope.y = orientation.y;
+        this.gyroscope.z = orientation.z;
+        this.gyroscope.timestamp = orientation.timestamp;
       }
     ).catch((error: any) => {
       Logger.error(JSON.stringify(error));
@@ -374,89 +351,22 @@ http://kit-blockchain.duckdns.org:31090/api/ShipmentException
    * This method is responsible for collecting the geolocation data of the device and storing it to the data field of this class.
    */
   private updateGeolocationData() {
-    this.geolocation.getCurrentPosition().then((geoposition: Geoposition) => {
-      this.geolocationLatitude = geoposition.coords.latitude;
-      this.geolocationLongitude = geoposition.coords.longitude;
-      this.geolocationTime = geoposition.timestamp;
+    this.geolocationService.getCurrentPosition().then((geoposition: Geoposition) => {
+      this.geolocation.lat = geoposition.coords.latitude;
+      this.geolocation.lon = geoposition.coords.longitude;
+      this.geolocation.timestamp = geoposition.timestamp;
 
-      // Logger.log("Geolocation - /n" +
-      //            "geolocationLatitude: " + geoposition.coords.latitude +
-      //            "geolocationLongitude: " + geoposition.coords.longitude);
     }).catch((error: any) => {
-      //Logger.error(error); //TODO: ändern
-      this.geolocationLatitude = 50;
-      this.geolocationLongitude = 8;
-      this.geolocationTime = Date.now();
+      this.geolocation.lat = 50;
+      this.geolocation.lon = 8;
+      this.geolocation.timestamp = Date.now();
     });
   }
 
-  /**
-   * This method handles the "takePicture" command which can be triggered from within the dashboard.
-   * First, a picture gets taken. Second, the picture gets uploaded to the dashboard directly (by passing the IoT platform).
-   * The picture does not get send to the dashboard via the IoT platform since messagses send to the IoT platform are limited to less than 200kb.
-   *
-   * This method uses the camera-preview plugin to automatically take a picture with the device camera.
-   * https://github.com/cordova-plugin-camera-preview/
-   *
-   * Caution: There is currently a bug in the cordova-plugin-camera-preview which causes this function to be really slow
-   * on an iOS device!
-   */
+
   private handelTakePictureCommand() {
-    // ############# 1. Take the picture #############
-    // options to configure the camera preview
-    let cameraPreviewOpts: CameraPreviewOptions = {
-      x: 0,
-      y: 0,
-      width: window.screen.width,
-      height: window.screen.height,
-      camera: this.cameraPreview.CAMERA_DIRECTION.BACK,
-      toBack: true,
-      tapPhoto: false,
-      previewDrag: false
-    };
-
-    //options to configure how the picture should be taken
-    let pictureOpts: CameraPreviewPictureOptions = {
-      width: 600,
-      height: 600,
-      quality: 30
-    };
-
-    // start the camera preview
-    this.cameraPreview.startCamera(cameraPreviewOpts).then((response) => {
-      console.log("camera running!" + response);
-
-      // wait just a little bit longer in order to give the camera enough time to start
-      // this is needed because of a bug in the "cordova-plugin-camera-preview" plugin
-      setTimeout(() => {
-        Logger.log("Try to take picture.");
-        // turn the flash on
-        this.cameraPreview.setFlashMode(this.cameraPreview.FLASH_MODE.ON);
-
-        // take the picture
-        this.cameraPreview.takePicture(pictureOpts).then((base64PictureData) => {
-          Logger.log("took picture successfully");
-          // save the picture as base64 encoded string
-          this.image = "data:image/jpeg;base64," + base64PictureData;
-          // stop the camera preview
-          this.cameraPreview.stopCamera();
-
-          // ############# 2. Upload the picture #############
-          this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", { "deviceId": this.navParams.get('id'), "image": this.image }).subscribe(
-            // Successful responses call the first callback.
-            (data) => { Logger.log("Image uploaded successfully.") },
-            // Errors will call this callback instead:
-            (err) => {
-              Logger.error('Something went while uploading the image!' + JSON.stringify(err));
-            }
-          );
-        }, (error: any) => {
-          Logger.error(error);
-        });
-      }, 5000);
-    }).catch(error => {
-      console.log("could not access camera: " + error);
+    this.cameraService.handleCamera(this.navParams.get('id')).then((image: string) => {
+      this.image = image;
     });
   }
-
 }

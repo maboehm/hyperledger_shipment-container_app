@@ -1,8 +1,7 @@
+import { GlobalService } from './../../providers/global/global';
 import { Component } from '@angular/core';
 import { NavController } from "ionic-angular";
 import { SensorsPage } from "../sensors/sensors";
-import { AppConfig } from "../../app/app.config";
-import { Storage } from "@ionic/storage";
 
 /**
  * This class represents the start screen of the app.
@@ -14,51 +13,23 @@ import { Storage } from "@ionic/storage";
   templateUrl: 'home.html'
 })
 export class HomePage {
-  private organisation: string;
-  private deviceType: string;
-  private deviceId: string;
-  private authenticationToken: string;
-  private shipmentId: string;
+  public organisation: string;
+  public deviceType: string;
+  public deviceId: string;
+  public authenticationToken: string;
+  public shipmentId: string;
 
   constructor(
-    private navCtrl: NavController,
-    private storage: Storage) {
-    // read configuration from the storage or set it to undefined
-    this.storage.get(AppConfig.STORAGE_KEY_ORGANISATION).then((value: string) => {
-      if (value != null) {
-        this.organisation = value;
-      } else {
-        this.organisation = "";
-      }
-    });
-    this.storage.get(AppConfig.STORAGE_KEY_SHIPMENT_ID).then((value: string) => {
-      if (value != null) {
-        this.shipmentId = value;
-      } else {
-        this.shipmentId = "";
-      }
-    });
-    this.storage.get(AppConfig.STORAGE_KEY_DEVICE_TYPE).then((value: string) => {
-      if (value != null) {
-        this.deviceType = value;
-      } else {
-        this.deviceType = "";
-      }
-    });
-    this.storage.get(AppConfig.STORAGE_KEY_DEVICE_ID).then((value: string) => {
-      if (value != null) {
-        this.deviceId = value;
-      } else {
-        this.deviceId = "";
-      }
-    });
-    this.storage.get(AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN).then((value: string) => {
-      if (value != null) {
-        this.authenticationToken = value;
-      } else {
-        this.authenticationToken = "";
-      }
-    });
+    private navCtrl: NavController, private global: GlobalService) {
+
+    // load global variables
+    this.global.ready().then(() => {
+      this.authenticationToken = this.global.authenticationToken;
+      this.deviceId = this.global.deviceId;
+      this.deviceType = this.global.deviceType;
+      this.organisation = this.global.organisation;
+      this.shipmentId = this.global.shipmentId;
+    })
   }
 
   /**
@@ -68,12 +39,11 @@ export class HomePage {
   // tslint:disable-next-line:no-unused-variable
   private openSensorPage() {
     // store the configuration data to the local app storage
-    this.storage.set(AppConfig.STORAGE_KEY_ORGANISATION, this.organisation);
-    this.storage.set(AppConfig.STORAGE_KEY_SHIPMENT_ID, this.shipmentId);
-    this.storage.set(AppConfig.STORAGE_KEY_DEVICE_TYPE, this.deviceType);
-    this.storage.set(AppConfig.STORAGE_KEY_DEVICE_ID, this.deviceId);
-    this.storage.set(AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN, this.authenticationToken);
-
+    this.global.authenticationToken = this.authenticationToken;
+    this.global.deviceId = this.deviceId;
+    this.global.deviceType = this.deviceType;
+    this.global.organisation = this.organisation;
+    this.global.shipmentId = this.shipmentId;
 
     // build up payload to pass to the sensor page
     let payload: any = {

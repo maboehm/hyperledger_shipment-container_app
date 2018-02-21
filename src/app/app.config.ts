@@ -2,9 +2,6 @@
  * This class defines constants which can be used to configure the application.
  */
 export class AppConfig {
-
-////////////////////////////////////////////Properties////////////////////////////////////////////
-
   public static get DEVELOPMENT(): boolean {
     return true;
   };
@@ -34,7 +31,7 @@ export class AppConfig {
   };
 
   public static get URL_NODE_RED_SERVER(): string {
-    return "https://container-tracker-dashboard.mybluemix.net/";
+    return "https://kit-blockchain-dashboard.mybluemix.net/";
   }
 
 }
