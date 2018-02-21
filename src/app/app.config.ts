@@ -6,6 +6,22 @@ export class AppConfig {
     return true;
   };
 
+  public static get ENABLE_WATSON_IOT(): boolean {
+    return false;
+  }
+
+  public static get ENABLE_BLOCKCHAIN(): boolean {
+    return true;
+  }
+
+  public static get UPDATE_INTERVALL_SENSORS(): number {
+    return 400;
+  }
+
+  public static get UPDATE_INTERVALL_BLOCKCHAIN(): number {
+    return 5000;
+  }
+
   public static get STORAGE_KEY_ORGANISATION(): string {
     return "organisation";
   };
@@ -26,12 +42,12 @@ export class AppConfig {
     return "token";
   };
 
-  public static get LOREM_IPSUM(): string {
-    return "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
-  };
-
   public static get URL_NODE_RED_SERVER(): string {
     return "https://kit-blockchain-dashboard.mybluemix.net/";
+  }
+
+  public static get URL_BLOCKCHAIN_EXCEPTION(): string {
+    return "http://kit-blockchain.duckdns.org:31090/api/ShipmentException";
   }
 
 }

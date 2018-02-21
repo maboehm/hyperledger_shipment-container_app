@@ -17,6 +17,9 @@ import { CameraPreview } from "@ionic-native/camera-preview";
 import { IonicStorageModule } from "@ionic/storage";
 import { HttpClientModule } from "@angular/common/http";
 import { Insomnia } from "@ionic-native/insomnia";
+import { BlockchainService } from "./../providers/blockchain/blockchain";
+import { SensorService } from "./../providers/sensorService/sensorService";
+import { WatsonIotService } from "./../providers/watsonIot/watsonIot";
 
 @NgModule({
   declarations: [
@@ -46,6 +49,9 @@ import { Insomnia } from "@ionic-native/insomnia";
     CameraService,
     Insomnia,
     GlobalService,
+    BlockchainService,
+    SensorService,
+    WatsonIotService,
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })

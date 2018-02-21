@@ -75,14 +75,15 @@ export class CameraService {
             this.cameraPreview.stopCamera();
 
             // ############# 2. Upload the picture #############
-            this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", { "deviceId": id, "image": this.image }).subscribe(
-              // Successful responses call the first callback.
-              (data) => { Logger.log("Image uploaded successfully.") },
-              // Errors will call this callback instead:
-              (err) => {
-                Logger.error('Something went while uploading the image!' + JSON.stringify(err));
-              }
-            );
+            this.http.post(AppConfig.URL_NODE_RED_SERVER + "image-upload", { "deviceId": id, "image": this.image })
+              .subscribe(
+                // Successful responses call the first callback.
+                (data) => { Logger.log("Image uploaded successfully.") },
+                // Errors will call this callback instead:
+                (err) => {
+                  Logger.error('Something went while uploading the image!' + JSON.stringify(err));
+                }
+              );
           }, (error: any) => {
             Logger.error(error);
           });
