@@ -15,3 +15,9 @@ interface sensorEvent {
   gyroscope: sensorData,
   geolocation: geoData
 }
+
+interface blockchainException {
+  message: string,
+  deviceId: string,
+  time: Date | number
+}

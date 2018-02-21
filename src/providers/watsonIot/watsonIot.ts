@@ -30,12 +30,51 @@ export class WatsonIotService {
     this.setupDevice();
   }
 
+  // start sending the sensor data to the WatsonIoT Platform
+  public start() {
+    if (!AppConfig.ENABLE_WATSON_IOT) {
+      return;
+    }
+    // connect device with IoT Platform
+    Logger.log("Trys to connect to Watson IoT Platform!");
+    this.iotDevice.connect();
+
+    // wait until connected and start publishing data afterwards
+    this.iotDevice.on("connect", () => {
+      Logger.log("connected to IoT Platform");
+
+      // update the device data in a specific interval
+      if (this.updateIntervalWatson) return;
+      this.updateIntervalWatson = setInterval(() => {
+        // send data to the IoT platform
+        this.sendStatusToIotPlatform(this.acceleration, this.gyroscope, this.geolocation);
+      }, 500);
+      Logger.log("Started Tracking!");
+    });
+
+    // listen to commands send to this device for execution
+    this.iotDevice.on("command", (commandName, format, payload, topic) => {
+      // if the command is "takePicture"
+      if (commandName === "takePicture") {
+        this.cameraService.handleCamera(this.global.deviceId).then((image: string) => {
+          Logger.log("took image");
+        });
+
+        // if the command is unknown then throw an exception
+      } else {
+        Logger.error("Command not supported: " + commandName);
+      }
+    });
+  }
+
+  // stop sending the data and disconnect the device
   public stop() {
     clearInterval(this.updateIntervalWatson);
     this.updateIntervalWatson = null;
     this.iotDevice.disconnect();
   }
 
+  // configures the Watson IoT-Device
   private setupDevice() {
     // Build up device config object - therefore, load the config data
     let config = {
@@ -92,42 +131,5 @@ export class WatsonIotService {
     };
 
     this.iotDevice.publish("status", "json", JSON.stringify(deviceData), 0);
-  }
-
-
-  public start() {
-    if (!AppConfig.ENABLE_WATSON_IOT) {
-      return;
-    }
-    // connect device with IoT Platform
-    Logger.log("Trys to connect to Watson IoT Platform!");
-    this.iotDevice.connect();
-
-    // wait until connected and start publishing data afterwards
-    this.iotDevice.on("connect", () => {
-      Logger.log("connected to IoT Platform");
-
-      // update the device data in a specific interval
-      if (this.updateIntervalWatson) return;
-      this.updateIntervalWatson = setInterval(() => {
-        // send data to the IoT platform
-        this.sendStatusToIotPlatform(this.acceleration, this.gyroscope, this.geolocation);
-      }, 500);
-      Logger.log("Started Tracking!");
-    });
-
-    // listen to commands send to this device for execution
-    this.iotDevice.on("command", (commandName, format, payload, topic) => {
-      // if the command is "takePicture"
-      if (commandName === "takePicture") {
-        this.cameraService.handleCamera(this.global.deviceId).then((image: string) => {
-          Logger.log("took image");
-        });
-
-        // if the command is unknown then throw an exception
-      } else {
-        Logger.error("Command not supported: " + commandName);
-      }
-    });
   }
 }

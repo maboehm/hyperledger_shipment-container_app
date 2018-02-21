@@ -3,11 +3,11 @@
  */
 export class AppConfig {
   public static get DEVELOPMENT(): boolean {
-    return true;
+    return false;
   };
 
   public static get ENABLE_WATSON_IOT(): boolean {
-    return false;
+    return true;
   }
 
   public static get ENABLE_BLOCKCHAIN(): boolean {

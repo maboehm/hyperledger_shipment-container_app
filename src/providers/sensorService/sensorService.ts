@@ -22,6 +22,7 @@ export class SensorService {
     this.geolocation = { lat: 0, lon: 0, timestamp: 0 };
   }
 
+  // starts collecting sensor data and publishing a event 'sensordata'
   public start() {
     this.updateInterval = setInterval(() => {
       Promise.all([
@@ -38,6 +39,7 @@ export class SensorService {
     }, AppConfig.UPDATE_INTERVALL_SENSORS);
   }
 
+  // stop collecting sensor data
   public stop() {
     clearInterval(this.updateInterval);
   }

@@ -14,12 +14,14 @@ export class GlobalService {
   private promises = [];
 
   constructor(private storage: Storage) {
+    // maps a private variable to each storage key
     this.mapping[AppConfig.STORAGE_KEY_AUTHENTICATION_TOKEN] = '_authenticationToken';
     this.mapping[AppConfig.STORAGE_KEY_DEVICE_ID] = '_deviceId';
     this.mapping[AppConfig.STORAGE_KEY_DEVICE_TYPE] = '_deviceType';
     this.mapping[AppConfig.STORAGE_KEY_ORGANISATION] = '_organisation';
     this.mapping[AppConfig.STORAGE_KEY_SHIPMENT_ID] = '_shipmentId';
 
+    // get all the data in the storage and set the local value (according to mapping)
     for (let key in this.mapping) {
       this.promises.push(this.storage.get(key))
 
@@ -29,6 +31,7 @@ export class GlobalService {
     }
   }
 
+  // returns a Promise, that is resolved once all the data is loaded from storage
   public ready() {
     return Promise.all(this.promises);
   }

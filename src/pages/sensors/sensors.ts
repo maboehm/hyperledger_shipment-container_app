@@ -69,8 +69,7 @@ export class SensorsPage {
    * This method gets called once the page gets closed.
    * The method performs the following steps:
    * 1. stop keeping the device awake
-   * 2. cancel the sensor data collecting interval
-   * 3. disconnect the device from the IBM Watson IoT Platform
+   * 2. stop all services
    */
   // tslint:disable-next-line:no-unused-variable
   private ionViewWillLeave() {
@@ -82,12 +81,13 @@ export class SensorsPage {
 
     // end update interval
     this.watsonIotService.stop();
-    //this.sensorService.stop();
+    this.sensorService.stop();
     this.blockchainService.stop();
 
     Logger.log("Ended Tracking!");
   }
 
+  // Takes a Image and displays it
   public handleTakePictureCommand() {
     this.cameraService.handleCamera(this.global.deviceId).then((image: string) => {
       this.image = image;

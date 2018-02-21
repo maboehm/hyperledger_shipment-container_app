@@ -10,14 +10,14 @@ import "./../../app/typings";
 
 export class BlockchainService {
   private updateIntervalBlockchain: number;
-  private exceptionFound: any;
+  private exceptionFound: blockchainException;
 
   private deviceId: string;
   private shipmentId: string;
 
-  acceleration: sensorData;
-  gyroscope: sensorData;
-  geolocation: geoData;
+  private acceleration: sensorData;
+  private gyroscope: sensorData;
+  private geolocation: geoData;
 
   constructor(private http: HttpClient, private events: Events, private global: GlobalService) {
     if (AppConfig.ENABLE_BLOCKCHAIN) {
@@ -32,6 +32,7 @@ export class BlockchainService {
     });
   }
 
+  // start checking for exceptions according to interval, sends exception to blockchain rest server
   public start() {
     this.shipmentId = this.global.shipmentId;
     this.deviceId = this.global.deviceId;
@@ -50,7 +51,7 @@ export class BlockchainService {
           "gpsLat": this.geolocation.lat,
           "gpsLong": this.geolocation.lon,
           "shipment": "org.kit.blockchain.Shipment#" + this.shipmentId,
-          "timestamp": new Date(this.exceptionFound.time).toISOString()
+          "timestamp": new Date(this.exceptionFound.time as Date).toISOString()
         }
         this.exceptionFound = null;
         this.http.post(AppConfig.URL_BLOCKCHAIN_EXCEPTION, data)
@@ -61,6 +62,7 @@ export class BlockchainService {
     }, AppConfig.UPDATE_INTERVALL_BLOCKCHAIN);
   }
 
+  // stops the check interval
   public stop() {
     clearInterval(this.updateIntervalBlockchain);
   }

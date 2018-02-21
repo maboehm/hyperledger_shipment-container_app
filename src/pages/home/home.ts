@@ -45,16 +45,8 @@ export class HomePage {
     this.global.organisation = this.organisation;
     this.global.shipmentId = this.shipmentId;
 
-    // build up payload to pass to the sensor page
-    let payload: any = {
-      "org": this.organisation,
-      "id": this.deviceId,
-      "type": this.deviceType,
-      "auth-token": this.authenticationToken,
-      "shipment": this.shipmentId
-    };
     // call the sensor page to start the tracking
-    this.navCtrl.push(SensorsPage, payload);
+    this.navCtrl.push(SensorsPage);
   }
 
 }
