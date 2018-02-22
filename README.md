@@ -225,4 +225,4 @@ Authors
 ====================================
 Developed by **Paul Wenzel** ([wenzel.paul@de.ibm.com](mailto:wenzel.paul@de.ibm.com)).
 
-Blockchain-Integration by **Marcel Hofmann* ([info@marcelhofmann.com](mailto:info@marcelhofmann.com)).
+Blockchain-Integration by **Marcel Hofmann** ([info@marcelhofmann.com](mailto:info@marcelhofmann.com)).
