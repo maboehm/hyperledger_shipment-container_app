@@ -131,6 +131,15 @@ Since the dashboard contains buttons and a selector the sixth stage is responsib
 In order to easily delete all the data from the flow-context the "Remove all data" injector has been added to the NodeRED flow.
   
 
+Integration with Blockchain
+===================================
+An integration with a Hyperledger Blockchain was later implemented to demonstrate how Blockchain-Technology could be used to reduce
+the requirement of trust in a network. Instead of publishing all sensor data (as is the case with the WatonIoT-Platform), the Blockchain integration
+only publishes Exceptions, which are detected on device and sent directly to a Compoer-REST-Server. This functionality can be disabled in
+the *app.config.ts*-file.
+
+For more information and setup instructions, please refer to the [Business Network Repository](https://github.com/m2hofi94/hyperledger_shipment-business_network).
+
 Setup the Demo
 ====================================
 In order to setup the demo the following components are required:
@@ -212,6 +221,8 @@ This step is not necessary for the demo but can still be performed in order to d
 2. Connect the Cloudant instance to your IBM Watson IoT Platform instance ([instructions](https://developer.ibm.com/recipes/tutorials/cloudant-nosql-db-as-historian-data-storage-for-ibm-watson-iot-parti/#r_step3)) 
 
 
-Author
+Authors
 ====================================
 Developed by **Paul Wenzel** ([wenzel.paul@de.ibm.com](mailto:wenzel.paul@de.ibm.com)).
+
+Blockchain-Integration by **Marcel Hofmann* ([info@marcelhofmann.com](mailto:info@marcelhofmann.com)).
